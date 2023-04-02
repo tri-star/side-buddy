@@ -12,11 +12,14 @@ const extensionConfig = {
   target: 'node', // VS Code extensions run in a Node.js-context 📖 -> https://webpack.js.org/configuration/node/
 	mode: 'none', // this leaves the source code as close as possible to the original (when packaging we set this to 'production')
 
-  entry: './src/extension.ts', // the entry point of this extension, 📖 -> https://webpack.js.org/configuration/entry-context/
+  entry: {
+    extension: './src/extension.ts',
+    sidebar: './src/sidebar.tsx',
+  }, // the entry point of this extension, 📖 -> https://webpack.js.org/configuration/entry-context/
   output: {
     // the bundle is stored in the 'dist' folder (check package.json), 📖 -> https://webpack.js.org/configuration/output/
     path: path.resolve(__dirname, 'dist'),
-    filename: 'extension.js',
+    filename: '[name].js',
     libraryTarget: 'commonjs2'
   },
   externals: {
@@ -25,19 +28,25 @@ const extensionConfig = {
   },
   resolve: {
     // support reading TypeScript and JavaScript files, 📖 -> https://github.com/TypeStrong/ts-loader
-    extensions: ['.ts', '.js']
+    extensions: ['.ts', '.js', '.tsx', ]
   },
   module: {
     rules: [
       {
-        test: /\.ts$/,
-        exclude: /node_modules/,
+        test: /\.(ts|tsx)?$/,
+        exclude: /(node_modules)/,
         use: [
           {
+            loader: 'babel-loader',
+            options: {
+              presets: ['@babel/preset-env', '@babel/preset-react'] // 追加
+            }
+          },
+          {
             loader: 'ts-loader'
-          }
-        ]
-      }
+          },
+      ]
+      },
     ]
   },
   devtool: 'nosources-source-map',

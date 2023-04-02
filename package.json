@@ -9,7 +9,9 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "*onView:side-buddy"
+  ],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
@@ -17,7 +19,24 @@
         "command": "side-buddy.helloWorld",
         "title": "Hello World"
       }
-    ]
+    ],
+    "views": {
+      "side-buddy": [
+        {
+          "id": "side-buddy",
+          "name": "Side Buddy"
+        }
+      ]
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "side-buddy",
+          "title": "Side Buddy",
+          "icon": "assets/ext-icon.png"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "yarn run package",
@@ -31,19 +50,27 @@
     "test": "node ./out/test/runTest.js"
   },
   "devDependencies": {
-    "@types/vscode": "^1.77.0",
+    "@babel/core": "^7.21.4",
+    "@babel/preset-react": "^7.18.6",
     "@types/glob": "^8.1.0",
     "@types/mocha": "^10.0.1",
     "@types/node": "16.x",
+    "@types/react-dom": "^18.0.11",
+    "@types/vscode": "^1.77.0",
     "@typescript-eslint/eslint-plugin": "^5.56.0",
     "@typescript-eslint/parser": "^5.56.0",
+    "@vscode/test-electron": "^2.3.0",
+    "babel-loader": "^9.1.2",
     "eslint": "^8.36.0",
     "glob": "^8.1.0",
     "mocha": "^10.2.0",
-    "typescript": "^4.9.5",
     "ts-loader": "^9.4.2",
+    "typescript": "^4.9.5",
     "webpack": "^5.76.3",
-    "webpack-cli": "^5.0.1",
-    "@vscode/test-electron": "^2.3.0"
+    "webpack-cli": "^5.0.1"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   }
 }
