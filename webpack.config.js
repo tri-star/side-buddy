@@ -3,6 +3,7 @@
 'use strict';
 
 const path = require('path');
+const webpack = require('webpack');
 
 //@ts-check
 /** @typedef {import('webpack').Configuration} WebpackConfig **/
@@ -38,9 +39,9 @@ const extensionConfig = {
         use: [
           {
             loader: 'babel-loader',
-            options: {
-              presets: ['@babel/preset-env', '@babel/preset-react'] // 追加
-            }
+            // options: {
+            //   presets: ['@babel/preset-env', '@babel/preset-react'] // 追加
+            // }
           },
           {
             loader: 'ts-loader'
@@ -53,5 +54,10 @@ const extensionConfig = {
   infrastructureLogging: {
     level: "log", // enables logging required for problem matchers
   },
+  plugins: [
+    new webpack.DefinePlugin({
+      'process.env': "{}",
+    }),
+  ],
 };
 module.exports = [ extensionConfig ];
