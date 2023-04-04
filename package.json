@@ -17,7 +17,25 @@
         "command": "side-buddy.helloWorld",
         "title": "Hello World"
       }
-    ]
+    ],
+    "views": {
+      "side-buddy": [
+        {
+          "type": "webview",
+          "id": "side-buddy.sidebar",
+          "name": "Side Buddy"
+        }
+      ]
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "side-buddy",
+          "title": "Side Buddy",
+          "icon": "assets/ext-icon.png"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "yarn run package",
