@@ -5,5 +5,5 @@
     "moduleResolution": "Node",
     "allowSyntheticDefaultImports": true
   },
-  "include": [".eslintrc.js"]
+  "include": [".eslintrc.js", "prettier.config.js"]
 }
