@@ -2,7 +2,7 @@ module.exports = {
   root: true,
   env: {
     browser: true,
-    es2022: true
+    es2022: true,
     // "jest/globals": true
   },
   extends: [
@@ -14,7 +14,7 @@ module.exports = {
     'plugin:react/recommended',
     'plugin:react/jsx-runtime',
     'plugin:react-hooks/recommended',
-    'prettier'
+    'prettier',
     // "plugin:jest/recommended",
   ],
   parserOptions: {
@@ -24,36 +24,37 @@ module.exports = {
       './tsconfig.json',
       './tsconfig.node.json',
       './packages/app/tsconfig.json',
-      './packages/app/tsconfig.node.json'
+      './packages/app/tsconfig.node.json',
     ],
-    sourceType: 'module'
+    sourceType: 'module',
   },
   plugins: [
     'react',
     // "jest",
     'jsx-a11y',
     '@typescript-eslint',
-    'react-hooks'
+    'react-hooks',
   ],
   rules: {
     '@typescript-eslint/triple-slash-reference': 'off',
     '@typescript-eslint/consistent-type-definitions': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/no-floating-promises': 'warn',
-    'no-console': 'off'
+    'no-console': 'off',
+    '@typescript-eslint/no-empty-function': 'off',
   },
   settings: {
     react: {
-      version: 'detect'
-    }
+      version: 'detect',
+    },
   },
   overrides: [
     {
       files: ['*.tsx'],
       rules: {
-        'react/prop-types': 'off'
-      }
-    }
+        'react/prop-types': 'off',
+      },
+    },
     // {
     //   "files": [
     //     "src/**/__tests__/**/*.(ts,tsx)",
@@ -67,5 +68,5 @@ module.exports = {
     //   ],
     //   "plugins": ["jest"]
     // }
-  ]
+  ],
 }
