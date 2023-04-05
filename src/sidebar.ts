@@ -53,15 +53,19 @@ class SidebarProvider implements vscode.WebviewViewProvider {
         manifest['index.html'].file
       )
     )
-    const styleUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(
-        this._extensionUri,
-        'packages',
-        'app',
-        'dist',
-        manifest['index.html'].css[0]
-      )
-    )
+
+    const setting = { setting: 'test' }
+
+    // const styleUri = webview.asWebviewUri(
+    //   vscode.Uri.joinPath(
+    //     this._extensionUri,
+    //     'packages',
+    //     'app',
+    //     'dist',
+    //     manifest['index.html'].css[0]
+    //   )
+    // )
+    // <link rel="stylesheet" href="${styleUri.toString()}" />
 
     return `<!doctype html>
     <html lang="ja">
@@ -76,8 +80,10 @@ class SidebarProvider implements vscode.WebviewViewProvider {
     </head>
     <body>
       <div id="root"></div>
+      <script id="setting" type="application/json">${JSON.stringify(
+        setting
+      )}</script>
       <script src="${scriptUri.toString()}"></script>
-      <link rel="stylesheet" href="${styleUri.toString()}" />
     </body>
     </html>
     `
