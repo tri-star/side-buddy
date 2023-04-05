@@ -67,12 +67,12 @@ class SidebarProvider implements vscode.WebviewViewProvider {
     <html lang="ja">
     <head>
       <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta content="default-src 'none'; img-src ${
         webview.cspSource
       } https:; script-src ${webview.cspSource}; style-src ${
       webview.cspSource
     };"
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
       <div id="root"></div>
