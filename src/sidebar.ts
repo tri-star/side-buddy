@@ -56,6 +56,12 @@ class SidebarProvider implements vscode.WebviewViewProvider {
 
     const setting = { setting: 'test' }
 
+    const gateway = {
+      postMessage: (message: any) => {
+        console.log(message)
+      },
+    }
+
     // const styleUri = webview.asWebviewUri(
     //   vscode.Uri.joinPath(
     //     this._extensionUri,
@@ -80,6 +86,9 @@ class SidebarProvider implements vscode.WebviewViewProvider {
     </head>
     <body>
       <div id="root"></div>
+      <script id="gateway">
+        const gateway = ${JSON.stringify(gateway)}
+      </script>
       <script id="setting" type="application/json">${JSON.stringify(
         setting
       )}</script>
