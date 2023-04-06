@@ -42,6 +42,7 @@ module.exports = {
     '@typescript-eslint/no-floating-promises': 'warn',
     'no-console': 'off',
     '@typescript-eslint/no-empty-function': 'off',
+    'react/no-unknown-property': ['error', { ignore: ['css'] }],
   },
   settings: {
     react: {
