@@ -1,3 +1,11 @@
+// ------------------------------------------------------------
+
+import {
+  type ExtensionMessage,
+  extensionMessageSchema,
+} from 'domain/extension-message'
+
+// VSCodeのWebViewが提供するacquireVsCodeApi() に関する定義
 export type VsCodeApi = {
   postMessage: <T>(message: T) => void
 
@@ -19,4 +27,16 @@ function acquireVsCodeApiStub(): VsCodeApi {
     postMessage: () => {},
     getState: () => undefined,
   }
+}
+
+// ------------------------------------------------------------
+// WebView間で通信するためのメッセージハンドラの定義
+
+type MessageHandler = (message: ExtensionMessage) => void
+
+export const listenExtensionMessage = (handler: MessageHandler) => {
+  window.addEventListener('message', (event: unknown) => {
+    const message = extensionMessageSchema.parse(event)
+    handler(message)
+  })
 }
