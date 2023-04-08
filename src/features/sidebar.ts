@@ -1,8 +1,8 @@
 import * as path from 'path'
 import * as fs from 'fs'
 import * as vscode from 'vscode'
-import { ExtensionMessageHandler } from '../api/extension-message-handler'
-import { panelMessageSchema } from '../domain/panel-message'
+import { sendMessage } from '@/api/vs-code/send-message'
+import { panelMessageSchema } from '@/domain/panel-message'
 
 type ViteManifest = {
   'index.html': {
@@ -22,7 +22,6 @@ export function registerSideBarPanel(context: vscode.ExtensionContext) {
 
 class SidebarProvider implements vscode.WebviewViewProvider {
   private _view?: vscode.WebviewView
-  private _messageHandler?: ExtensionMessageHandler
   private readonly _extensionUri: vscode.Uri
   private readonly _extensionPath: string
 
@@ -36,10 +35,13 @@ class SidebarProvider implements vscode.WebviewViewProvider {
    * @param message: JSON形式のメッセージ
    */
   private onDidReceiveMessage(message: unknown) {
+    if (this._view == null) {
+      throw new Error('_viewがセットされていません')
+    }
     const parsedMessage = panelMessageSchema.parse(message)
     switch (parsedMessage.type) {
       case 'loaded':
-        void this._messageHandler?.sendMessage({
+        void sendMessage(this._view.webview, {
           type: 'updateConfig',
           config: {
             apiKey: 'hogehoge',
@@ -58,7 +60,6 @@ class SidebarProvider implements vscode.WebviewViewProvider {
     token: vscode.CancellationToken
   ): void | Thenable<void> {
     this._view = webviewView
-    this._messageHandler = new ExtensionMessageHandler(webviewView.webview)
 
     webviewView.webview.options = {
       enableScripts: true,
