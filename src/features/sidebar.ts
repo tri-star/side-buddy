@@ -1,8 +1,8 @@
 import * as path from 'path'
 import * as fs from 'fs'
 import * as vscode from 'vscode'
-import { ExtensionMessageHandler } from './api/extension-message-handler'
-import { panelMessageSchema } from './domain/panel-message'
+import { ExtensionMessageHandler } from '../api/extension-message-handler'
+import { panelMessageSchema } from '../domain/panel-message'
 
 type ViteManifest = {
   'index.html': {
@@ -15,7 +15,7 @@ export function registerSideBarPanel(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.window.registerWebviewViewProvider(
       'side-buddy.sidebar',
-      new SidebarProvider(context.extensionUri, context.extensionPath)
+      new SidebarProvider(context)
     )
   )
 }
@@ -23,12 +23,35 @@ export function registerSideBarPanel(context: vscode.ExtensionContext) {
 class SidebarProvider implements vscode.WebviewViewProvider {
   private _view?: vscode.WebviewView
   private _messageHandler?: ExtensionMessageHandler
+  private readonly _extensionUri: vscode.Uri
+  private readonly _extensionPath: string
 
-  constructor(
-    private readonly _extensionUri: vscode.Uri,
-    private readonly _extensionPath: string
-  ) {}
+  constructor(context: vscode.ExtensionContext) {
+    this._extensionUri = context.extensionUri
+    this._extensionPath = context.extensionPath
+  }
 
+  /**
+   * パネルから通知されたメッセージを処理する
+   * @param message: JSON形式のメッセージ
+   */
+  private onDidReceiveMessage(message: unknown) {
+    const parsedMessage = panelMessageSchema.parse(message)
+    switch (parsedMessage.type) {
+      case 'loaded':
+        void this._messageHandler?.sendMessage({
+          type: 'updateConfig',
+          config: {
+            apiKey: 'hogehoge',
+          },
+        })
+    }
+  }
+
+  /**
+   * WebViewを初期化する
+   * @override
+   */
   resolveWebviewView(
     webviewView: vscode.WebviewView,
     context: vscode.WebviewViewResolveContext<unknown>,
@@ -38,24 +61,16 @@ class SidebarProvider implements vscode.WebviewViewProvider {
     this._messageHandler = new ExtensionMessageHandler(webviewView.webview)
 
     webviewView.webview.options = {
-      // Allow scripts in the webview
       enableScripts: true,
       localResourceRoots: [this._extensionUri],
     }
 
+    // WebView用のHTMLの構築は他画面でも共通化できる部分が多いので、
+    // 今後ここを共通化していくことを検討する。
+    // - manifestからUriを生成する
+    // - URIとscript/styleなどの種別を渡して動的にタグを生成するなど
     webviewView.webview.html = this._getHtmlForWebview(webviewView.webview)
-    webviewView.webview.onDidReceiveMessage((message: unknown) => {
-      const parsedMessage = panelMessageSchema.parse(message)
-      switch (parsedMessage.type) {
-        case 'loaded':
-          void this._messageHandler?.sendMessage({
-            type: 'updateConfig',
-            config: {
-              apiKey: 'hogehoge',
-            },
-          })
-      }
-    })
+    webviewView.webview.onDidReceiveMessage(this.onDidReceiveMessage.bind(this))
   }
 
   private _getHtmlForWebview(webview: vscode.Webview): string {
