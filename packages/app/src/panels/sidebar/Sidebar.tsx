@@ -1,6 +1,14 @@
 import { css } from "@emotion/react"
+import { useEffect } from "react"
+import { useSidebar } from "./use-sidebar"
 
 function Sidebar () {
+
+  const {init} = useSidebar()
+
+  useEffect(() => {
+    init()
+  }, [init])
 
   const containerStyle = css({
     display: 'flex',

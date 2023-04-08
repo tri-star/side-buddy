@@ -24,6 +24,9 @@ const extensionConfig = {
     // modules added here also need to be added in the .vscodeignore file
   },
   resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src'), // '@'というaliasを、'src'ディレクトリに紐付ける
+    },
     // support reading TypeScript and JavaScript files, 📖 -> https://github.com/TypeStrong/ts-loader
     extensions: ['.ts', '.js'],
   },
