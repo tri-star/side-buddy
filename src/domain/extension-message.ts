@@ -1,12 +1,12 @@
 import zod from 'zod'
-import { appConfigSchema } from '@/domain/app-config'
+import { appConfigSchema } from './app-config'
 
 const updateConfigSchema = zod.object({
   type: zod.literal('updateConfig'),
   config: appConfigSchema,
 })
 
-// typeが複数になった時にdiscriminateUnionに変更する
+// typeが複数になった時にunionに変更する
 // (unionはパターンが1種類の場合エラーになってしまう)
 export const extensionMessageSchema = updateConfigSchema
 

@@ -1,5 +1,6 @@
-import { isVsCodeEnv } from 'api/vs-code-api'
+import { isVsCodeEnv } from '@/api/vs-code/vs-code-api'
 import { ConsoleLogger } from './console-logger'
+import { VsCodeLogger } from './vs-code-logger'
 
 export interface Logger {
   debug: (message: string) => void
@@ -8,9 +9,14 @@ export interface Logger {
   error: (message: string) => void
 }
 
+let logger: Logger | undefined
+
 export const getLogger = (): Logger => {
-  if (isVsCodeEnv()) {
-    return new ConsoleLogger()
+  if (logger === undefined) {
+    if (isVsCodeEnv()) {
+      logger = new VsCodeLogger()
+    }
+    logger = new ConsoleLogger()
   }
-  return new ConsoleLogger()
+  return logger
 }

@@ -1,8 +1,8 @@
 import * as path from 'path'
 import * as fs from 'fs'
 import * as vscode from 'vscode'
-import { vsCodeApi } from './api/vs-code-api'
-import { type AppConfig } from './domain/app_config'
+import { ExtensionMessageHandler } from './api/extension-message-handler'
+import { panelMessageSchema } from './domain/panel-message'
 
 type ViteManifest = {
   'index.html': {
@@ -22,6 +22,7 @@ export function registerSideBarPanel(context: vscode.ExtensionContext) {
 
 class SidebarProvider implements vscode.WebviewViewProvider {
   private _view?: vscode.WebviewView
+  private _messageHandler?: ExtensionMessageHandler
 
   constructor(
     private readonly _extensionUri: vscode.Uri,
@@ -34,6 +35,7 @@ class SidebarProvider implements vscode.WebviewViewProvider {
     token: vscode.CancellationToken
   ): void | Thenable<void> {
     this._view = webviewView
+    this._messageHandler = new ExtensionMessageHandler(webviewView.webview)
 
     webviewView.webview.options = {
       // Allow scripts in the webview
@@ -42,6 +44,18 @@ class SidebarProvider implements vscode.WebviewViewProvider {
     }
 
     webviewView.webview.html = this._getHtmlForWebview(webviewView.webview)
+    webviewView.webview.onDidReceiveMessage((message: unknown) => {
+      const parsedMessage = panelMessageSchema.parse(message)
+      switch (parsedMessage.type) {
+        case 'loaded':
+          void this._messageHandler?.sendMessage({
+            type: 'updateConfig',
+            config: {
+              apiKey: 'hogehoge',
+            },
+          })
+      }
+    })
   }
 
   private _getHtmlForWebview(webview: vscode.Webview): string {
@@ -56,30 +70,29 @@ class SidebarProvider implements vscode.WebviewViewProvider {
       )
     )
 
-    // const styleUri = webview.asWebviewUri(
-    //   vscode.Uri.joinPath(
-    //     this._extensionUri,
-    //     'packages',
-    //     'app',
-    //     'dist',
-    //     manifest['index.html'].css[0]
-    //   )
-    // )
-    // <link rel="stylesheet" href="${styleUri.toString()}" />
+    const styleUri = webview.asWebviewUri(
+      vscode.Uri.joinPath(
+        this._extensionUri,
+        'packages',
+        'app',
+        'dist',
+        manifest['index.html'].css[0]
+      )
+    )
 
     return `<!doctype html>
     <html lang="ja">
     <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta content="default-src 'none'; img-src ${
-        webview.cspSource
-      } https:; script-src ${webview.cspSource}; style-src ${
-      webview.cspSource
-    };"
+      <meta content="default-src 'none';
+        img-src ${webview.cspSource} https:;
+        script-src ${webview.cspSource};
+        style-src ${webview.cspSource};">
     </head>
     <body>
       <div id="root"></div>
+      <link rel="stylesheet" href="${styleUri.toString()}" />
       <script src="${scriptUri.toString()}"></script>
     </body>
     </html>
