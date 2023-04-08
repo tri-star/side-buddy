@@ -9,7 +9,6 @@ type MessageHandler = (message: ExtensionMessage) => void
 export const listenExtensionMessage = (handler: MessageHandler) => {
   window.addEventListener('message', (event) => {
     try {
-      console.log('receive extension message: ', event.data)
       const message = extensionMessageSchema.parse(
         JSON.parse(String(event.data))
       )
@@ -22,5 +21,4 @@ export const listenExtensionMessage = (handler: MessageHandler) => {
       }
     }
   })
-  console.log('listen start.')
 }
