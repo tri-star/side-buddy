@@ -1,6 +1,12 @@
 import zod from 'zod'
 import { appConfigSchema } from '@/domain/app-config'
 
+export type PostMessagePayload = {
+  data: object | string
+}
+
+export const extensionMessageTypes = ['updateConfig']
+
 const updateConfigSchema = zod.object({
   type: zod.literal('updateConfig'),
   config: appConfigSchema,

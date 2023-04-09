@@ -48,6 +48,7 @@ class SidebarProvider implements vscode.WebviewViewProvider {
           type: 'updateConfig',
           config: {
             apiKey: 'hogehoge',
+            defaultTemperature: 0.0,
           },
         })
         break
