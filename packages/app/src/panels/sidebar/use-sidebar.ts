@@ -4,6 +4,7 @@ import { sendPanelMessage } from '@/api/vs-code/send-panel-message'
 import { type ExtensionMessage } from '@/domain/extension-message'
 import { type AppState } from '@/domain/app-state'
 import { chatRequestSchema, type ChatRole } from '@/domain/chat'
+import { requestChatCompletion } from '@/api/open-ai/chat-api'
 
 export function useSidebar() {
   const [state, setState] = useState<AppState>({
@@ -12,6 +13,7 @@ export function useSidebar() {
   const [temperature, setTemperature] = useState<number>(0.0)
   const [role, setRole] = useState<ChatRole>('user')
   const [message, setMessage] = useState<string>('')
+  const [completion, setCompletion] = useState<string>('')
 
   /**
    * 拡張機能からのメッセージを受け取り処理する
@@ -45,6 +47,20 @@ export function useSidebar() {
     return result.success
   }, [role, temperature, message])
 
+  const submit = useCallback(async () => {
+    setCompletion('')
+    for await (const chunk of requestChatCompletion(
+      state.config?.apiKey ?? '',
+      {
+        role,
+        temperature,
+        message,
+      }
+    )) {
+      setCompletion((prev) => prev + chunk)
+    }
+  }, [role, temperature, message, state])
+
   return {
     init,
     state,
@@ -54,6 +70,9 @@ export function useSidebar() {
     setRole,
     message,
     setMessage,
+    completion,
+    setCompletion,
     canSubmit,
+    submit,
   }
 }

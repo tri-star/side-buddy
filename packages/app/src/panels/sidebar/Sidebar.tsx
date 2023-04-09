@@ -10,7 +10,9 @@ function Sidebar () {
     temperature, setTemperature,
     role, setRole,
     message, setMessage,
+    completion,
     canSubmit,
+    submit,
   } = useSidebar()
 
   useEffect(() => {
@@ -66,7 +68,7 @@ function Sidebar () {
   return (
     <div css={containerStyle}>
       <p>質問：</p>
-      <div css={conversationAreaStyle}></div>
+      <div css={conversationAreaStyle}>{completion}</div>
       <div css={questionInputAreaStyle}>
         <div css={formRowStyle}>
           <p css={formLabelStyle}>Role</p>
@@ -86,7 +88,7 @@ function Sidebar () {
           />
         </div>
         <textarea css={textAreaStyle} onChange={e => { setMessage(e.target.value); }}>{message}</textarea>
-        <button css={buttonStyle} disabled={!canSubmit()}>Submit</button>
+        <button css={buttonStyle} disabled={!canSubmit()} onClick={() => {void submit()}}>Submit</button>
       </div>
     </div>
   )
