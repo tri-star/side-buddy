@@ -1,14 +1,21 @@
 import { css } from "@emotion/react"
 import { useEffect } from "react"
 import { useSidebar } from "./use-sidebar"
+import { type ChatRole } from "@/domain/chat"
 
 function Sidebar () {
 
-  const {init} = useSidebar()
+  const {
+    init,
+    temperature, setTemperature,
+    role, setRole,
+    message, setMessage,
+    canSubmit,
+  } = useSidebar()
 
   useEffect(() => {
     init()
-  }, [init])
+  }, [])
 
   const containerStyle = css({
     display: 'flex',
@@ -63,16 +70,23 @@ function Sidebar () {
       <div css={questionInputAreaStyle}>
         <div css={formRowStyle}>
           <p css={formLabelStyle}>Role</p>
-          <select>
+          <select value={role} onChange={ e => { setRole(e.target.value as ChatRole) } }>
             <option>system</option>
             <option>assistant</option>
             <option>user</option>
           </select>
           <p css={formLabelStyle}>Temperature</p>
-          <input type="number" css={temperatureInputStyle}></input>
+          <input
+            type="number"
+            css={temperatureInputStyle}
+            value={temperature}
+            onChange={e => { setTemperature(parseFloat(e.target.value)); } }
+            step={0.1}
+            max={1}
+          />
         </div>
-        <textarea css={textAreaStyle}></textarea>
-        <button css={buttonStyle}>Submit</button>
+        <textarea css={textAreaStyle} onChange={e => { setMessage(e.target.value); }}>{message}</textarea>
+        <button css={buttonStyle} disabled={!canSubmit()}>Submit</button>
       </div>
     </div>
   )

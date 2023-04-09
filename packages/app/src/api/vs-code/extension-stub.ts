@@ -14,10 +14,12 @@ export async function startExtensionStub() {
     config: {
       // 後で、VITE_ から始まる環境変数を読み込むようにする
       apiKey: import.meta.env.VITE_APP_CONFIG_OPEN_API_KEY,
-      defaultTemperature:
-        import.meta.env.VITE_APP_CONFIG_DEFAULT_TEMPERATURE ?? 0.0,
+      defaultTemperature: parseFloat(
+        import.meta.env.VITE_APP_CONFIG_DEFAULT_TEMPERATURE ?? '0.0'
+      ),
     },
   }
 
+  console.log('config', message)
   window.postMessage(message)
 }

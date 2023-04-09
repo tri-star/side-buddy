@@ -1,7 +1,7 @@
 import zod from 'zod'
 
 export const appConfigSchema = zod.object({
-  apiKey: zod.string(),
+  apiKey: zod.string().optional(),
   defaultTemperature: zod.number().default(0.0),
 })
 
