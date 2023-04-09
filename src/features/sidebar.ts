@@ -3,6 +3,7 @@ import * as fs from 'fs'
 import * as vscode from 'vscode'
 import { sendMessage } from '@/api/vs-code/send-message'
 import { panelMessageSchema } from '@/domain/panel-message'
+import { VsCodeLogger } from '@/logging/logger'
 
 type ViteManifest = {
   'index.html': {
@@ -24,10 +25,12 @@ class SidebarProvider implements vscode.WebviewViewProvider {
   private _view?: vscode.WebviewView
   private readonly _extensionUri: vscode.Uri
   private readonly _extensionPath: string
+  private readonly _logger: VsCodeLogger
 
   constructor(context: vscode.ExtensionContext) {
     this._extensionUri = context.extensionUri
     this._extensionPath = context.extensionPath
+    this._logger = new VsCodeLogger()
   }
 
   /**
@@ -47,6 +50,9 @@ class SidebarProvider implements vscode.WebviewViewProvider {
             apiKey: 'hogehoge',
           },
         })
+        break
+      case 'log':
+        this._logger.log(parsedMessage.level, parsedMessage.message)
     }
   }
 

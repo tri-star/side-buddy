@@ -15,8 +15,9 @@ export const getLogger = (): Logger => {
   if (logger === undefined) {
     if (isVsCodeEnv()) {
       logger = new VsCodeLogger()
+    } else {
+      logger = new ConsoleLogger()
     }
-    logger = new ConsoleLogger()
   }
   return logger
 }

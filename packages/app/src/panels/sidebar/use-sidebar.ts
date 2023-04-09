@@ -2,6 +2,7 @@ import { useCallback } from 'react'
 import { listenExtensionMessage } from '@/api/vs-code/listen-extension-message'
 import { sendPanelMessage } from '@/api/vs-code/send-panel-message'
 import { type ExtensionMessage } from '@/domain/extension-message'
+import { getLogger } from '@/logging/logger'
 
 export function useSidebar() {
   return {
@@ -22,8 +23,9 @@ function init() {
  * @param message
  */
 function handleExtensionMessage(message: ExtensionMessage) {
+  const logger = getLogger()
   switch (message.type) {
     case 'updateConfig':
-      console.log('updateConfig', message)
+      logger.debug(JSON.stringify(message))
   }
 }
