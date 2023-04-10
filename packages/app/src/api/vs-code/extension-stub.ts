@@ -20,6 +20,5 @@ export async function startExtensionStub() {
     },
   }
 
-  console.log('config', message)
   window.postMessage(message)
 }

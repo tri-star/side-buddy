@@ -87,7 +87,7 @@ function Sidebar () {
             max={1}
           />
         </div>
-        <textarea css={textAreaStyle} onChange={e => { setMessage(e.target.value); }}>{message}</textarea>
+        <textarea css={textAreaStyle} onChange={e => { setMessage(e.target.value); }} value={message}></textarea>
         <button css={buttonStyle} disabled={!canSubmit()} onClick={() => {void submit()}}>Submit</button>
       </div>
     </div>
