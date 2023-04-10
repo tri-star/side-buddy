@@ -92,7 +92,7 @@ export async function* requestChatCompletion(
         }
       }
     } catch (e) {
-      console.log(decoder.decode(value))
+      console.error(decoder.decode(value))
       console.error(e)
     }
 
