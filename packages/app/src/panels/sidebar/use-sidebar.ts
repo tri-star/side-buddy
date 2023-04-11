@@ -38,11 +38,17 @@ export function useSidebar() {
     [state]
   )
 
+  /**
+   * 初期化処理
+   */
   const init = useCallback(() => {
     listenExtensionMessage(handleExtensionMessage)
     sendPanelMessage({ type: 'loaded' })
   }, [handleExtensionMessage])
 
+  /**
+   * 送信可能かどうかを返す
+   */
   const canSubmit = useCallback((): boolean => {
     const result = chatRequestSchema.safeParse({
       messages: [
@@ -53,9 +59,12 @@ export function useSidebar() {
         },
       ],
     })
-    return result.success
-  }, [role, message])
+    return result.success && completion === ''
+  }, [role, message, completion])
 
+  /**
+   * 送信ボタンの処理
+   */
   const submit = useCallback(async () => {
     const messageId = ulid.ulid()
     setThread((prev) => ({

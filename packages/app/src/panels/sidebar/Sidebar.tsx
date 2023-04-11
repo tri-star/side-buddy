@@ -29,6 +29,8 @@ function Sidebar () {
   const conversationAreaStyle = css({
     flex: 1,
     height: '100%',
+    maxHeight: '100vh - 300px',
+    overflow: 'auto',
   })
 
   const questionInputAreaStyle = css({
@@ -67,22 +69,29 @@ function Sidebar () {
   })
 
   const threadMessageStyle = {
-    system: {
+    system: css({
       backgroundColor: '#ccc',
       padding: '10px',
       borderRadius: '5px',
-    },
+      whiteSpace: 'pre-wrap',
+    }),
     assistant: css({
       backgroundColor: '#f0f0f0',
       padding: '10px',
       borderRadius: '5px',
+      marginTop: '20px',
       marginRight: '20px',
+      marginLeft: '5px',
+      whiteSpace: 'pre-wrap',
     }),
     user: css({
       backgroundColor: '#e0e0e0',
       padding: '10px',
       borderRadius: '5px',
-      marginLeft: '20px'
+      marginTop: '20px',
+      marginLeft: '20px',
+      marginRight: '5px',
+      whiteSpace: 'pre-wrap',
     })
   }
 
