@@ -1,4 +1,11 @@
-import { type ExtensionMessage } from '@/domain/extension-message'
+import {
+  type PostMessagePayload,
+  type ExtensionMessage,
+  type PostMessageDataPart,
+} from '@/domain/extension-message'
+import { panelMessageSchema } from '@/domain/panel-message'
+import { getLogger } from '@/logging/logger'
+import { ZodError } from 'zod'
 
 /**
  * VSCodeの外で動作する環境用にスタブ実装を起動する。
@@ -8,17 +15,60 @@ export async function startExtensionStub() {
   // 1秒待つ
   await new Promise((resolve) => setTimeout(resolve, 1000))
 
+  const config = {
+    apiKey: window.localStorage.getItem('apiKey') ?? '',
+    defaultTemperature: parseFloat(
+      import.meta.env.VITE_APP_CONFIG_DEFAULT_TEMPERATURE ?? '0.0'
+    ),
+  }
+
   // 設定情報を通知する
   const message: ExtensionMessage = {
     type: 'updateConfig',
-    config: {
-      // 後で、VITE_ から始まる環境変数を読み込むようにする
-      apiKey: import.meta.env.VITE_APP_CONFIG_OPEN_API_KEY,
-      defaultTemperature: parseFloat(
-        import.meta.env.VITE_APP_CONFIG_DEFAULT_TEMPERATURE ?? '0.0'
-      ),
-    },
+    config,
   }
 
   window.postMessage(message)
+
+  window.addEventListener('message', (event: PostMessagePayload) => {
+    try {
+      let data = event.data as PostMessageDataPart
+      if (typeof data === 'string') {
+        data = JSON.parse(data) as PostMessageDataPart
+      }
+
+      if (String(data.source ?? '').startsWith('react-devtools')) {
+        // React dev toolsからの通知は対象外
+        return
+      }
+
+      const message = panelMessageSchema.parse(data)
+
+      switch (message.type) {
+        case 'set-api-key':
+          // APIキーの設定を受け付けたら、Panel側に設定更新を通知する
+          config.apiKey = message.apiKey
+          window.postMessage({
+            type: 'updateConfig',
+            config,
+          })
+          break
+      }
+    } catch (e) {
+      if (e instanceof ZodError) {
+        let dataString = event.data
+        if (typeof dataString === 'object') {
+          dataString = JSON.stringify(dataString)
+        }
+        getLogger().warn(
+          'Event parse error: \nEvent: ' +
+            dataString +
+            '\nError:' +
+            e.toString()
+        )
+      } else {
+        throw e
+      }
+    }
+  })
 }

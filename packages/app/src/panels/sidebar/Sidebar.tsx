@@ -4,6 +4,7 @@ import { useSidebar } from "./use-sidebar"
 import { type ChatRole } from "@/domain/chat"
 import { useAutoScroll } from "./use-auto-scroll"
 import { Spinner } from "@/components/Spinner"
+import { ApiKeyForm } from "./ApiKeyForm"
 
 function Sidebar () {
 
@@ -114,6 +115,9 @@ function Sidebar () {
         <Spinner />
       </div>
     )
+  }
+  if(state.config?.apiKey === '') {
+    return (<ApiKeyForm />)
   }
 
   return (

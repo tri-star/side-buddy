@@ -15,11 +15,15 @@ const logMessageSchema = zod.object({
   message: zod.string(),
 })
 
-// typeが複数になった時にdiscriminateUnionに変更する
-// (unionはパターンが1種類の場合エラーになってしまう)
+const setApiKeySchema = zod.object({
+  type: zod.literal('set-api-key'),
+  apiKey: zod.string().min(1),
+})
+
 export const panelMessageSchema = zod.discriminatedUnion('type', [
   loadedSchema,
   logMessageSchema,
+  setApiKeySchema,
 ])
 
 export type PanelMessage = zod.infer<typeof panelMessageSchema>
