@@ -77,6 +77,7 @@ export function useSidebar() {
         },
       ],
     }))
+    setMessage('')
     setCompletion('')
     let completionResult = ''
     for await (const chunk of requestChatCompletion(

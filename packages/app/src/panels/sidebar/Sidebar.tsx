@@ -99,7 +99,6 @@ function Sidebar () {
 
   return (
     <div css={containerStyle}>
-      <p>質問：</p>
       <div css={conversationAreaStyle}>
 
         {thread.messages.map(message => {
