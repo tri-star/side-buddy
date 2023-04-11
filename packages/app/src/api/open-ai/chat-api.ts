@@ -31,6 +31,7 @@ type ChatCompletionResponseStreamEntry = {
 
 export async function* requestChatCompletion(
   apiKey: string,
+  temperature: number,
   request: ChatRequest
 ) {
   const response = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -41,16 +42,16 @@ export async function* requestChatCompletion(
     },
     body: JSON.stringify({
       model: 'gpt-3.5-turbo',
-      messages: [
-        {
-          role: request.role,
-          content: request.message,
-        },
-      ],
-      temperature: request.temperature,
+      messages: request.messages.map((message) => {
+        return {
+          role: message.role,
+          content: message.message,
+        }
+      }),
+      temperature,
       frequency_penalty: 0,
       presence_penalty: 0,
-      max_tokens: 100,
+      max_tokens: 1000,
       stream: true,
     }),
   })
@@ -86,6 +87,12 @@ export async function* requestChatCompletion(
         ) as ChatCompletionResponseStreamEntry
 
         for (const choice of streamEntry.choices) {
+          if (choice.finish_reason != null) {
+            if (choice.finish_reason !== 'stop') {
+              console.info(choice)
+            }
+            return
+          }
           if (choice.delta?.content != null) {
             yield choice.delta.content
           }

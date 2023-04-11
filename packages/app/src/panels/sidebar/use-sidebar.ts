@@ -5,6 +5,8 @@ import { type ExtensionMessage } from '@/domain/extension-message'
 import { type AppState } from '@/domain/app-state'
 import { chatRequestSchema, type ChatRole } from '@/domain/chat'
 import { requestChatCompletion } from '@/api/open-ai/chat-api'
+import { type Thread } from '@/domain/thread'
+import * as ulid from 'ulid'
 
 export function useSidebar() {
   const [state, setState] = useState<AppState>({
@@ -14,6 +16,9 @@ export function useSidebar() {
   const [role, setRole] = useState<ChatRole>('user')
   const [message, setMessage] = useState<string>('')
   const [completion, setCompletion] = useState<string>('')
+  const [thread, setThread] = useState<Thread>({
+    messages: [],
+  })
 
   /**
    * 拡張機能からのメッセージを受け取り処理する
@@ -40,26 +45,60 @@ export function useSidebar() {
 
   const canSubmit = useCallback((): boolean => {
     const result = chatRequestSchema.safeParse({
-      role,
-      temperature,
-      message,
+      messages: [
+        {
+          id: ulid.ulid(),
+          role,
+          message,
+        },
+      ],
     })
     return result.success
-  }, [role, temperature, message])
+  }, [role, message])
 
   const submit = useCallback(async () => {
+    const messageId = ulid.ulid()
+    setThread((prev) => ({
+      messages: [
+        ...prev.messages,
+        {
+          id: messageId,
+          role,
+          message,
+        },
+      ],
+    }))
     setCompletion('')
+    let completionResult = ''
     for await (const chunk of requestChatCompletion(
       state.config?.apiKey ?? '',
+      temperature,
       {
-        role,
-        temperature,
-        message,
+        messages: [
+          ...thread.messages,
+          {
+            id: messageId,
+            role,
+            message,
+          },
+        ],
       }
     )) {
       setCompletion((prev) => prev + chunk)
+      completionResult += chunk
     }
-  }, [role, temperature, message, state])
+    setThread((prev) => ({
+      messages: [
+        ...prev.messages,
+        {
+          id: ulid.ulid(),
+          role: 'assistant',
+          message: completionResult,
+        },
+      ],
+    }))
+    setCompletion('')
+  }, [role, temperature, message, state, thread])
 
   return {
     init,
@@ -72,6 +111,7 @@ export function useSidebar() {
     setMessage,
     completion,
     setCompletion,
+    thread,
     canSubmit,
     submit,
   }

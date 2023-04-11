@@ -11,6 +11,7 @@ function Sidebar () {
     role, setRole,
     message, setMessage,
     completion,
+    thread,
     canSubmit,
     submit,
   } = useSidebar()
@@ -65,10 +66,43 @@ function Sidebar () {
     padding: '10px 5px',
   })
 
+  const threadMessageStyle = {
+    system: {
+      backgroundColor: '#ccc',
+      padding: '10px',
+      borderRadius: '5px',
+    },
+    assistant: css({
+      backgroundColor: '#f0f0f0',
+      padding: '10px',
+      borderRadius: '5px',
+      marginRight: '20px',
+    }),
+    user: css({
+      backgroundColor: '#e0e0e0',
+      padding: '10px',
+      borderRadius: '5px',
+      marginLeft: '20px'
+    })
+  }
+
+
   return (
     <div css={containerStyle}>
       <p>質問：</p>
-      <div css={conversationAreaStyle}>{completion}</div>
+      <div css={conversationAreaStyle}>
+
+        {thread.messages.map(message => {
+          return (
+            <div key={message.id} css={threadMessageStyle[message.role]}>
+              <p>{message.message}</p>
+            </div>
+          )
+        })
+        }
+
+        {completion}
+      </div>
       <div css={questionInputAreaStyle}>
         <div css={formRowStyle}>
           <p css={formLabelStyle}>Role</p>
