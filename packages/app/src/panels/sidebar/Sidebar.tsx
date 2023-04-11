@@ -3,6 +3,7 @@ import { useEffect, useRef } from "react"
 import { useSidebar } from "./use-sidebar"
 import { type ChatRole } from "@/domain/chat"
 import { useAutoScroll } from "./use-auto-scroll"
+import { Spinner } from "@/components/Spinner"
 
 function Sidebar () {
 
@@ -16,6 +17,7 @@ function Sidebar () {
     canSubmit,
     submit,
     handleKeyDown,
+    state,
   } = useSidebar()
 
   const conversationAreaRef = useRef<HTMLDivElement>(null)
@@ -23,7 +25,7 @@ function Sidebar () {
   useAutoScroll(conversationAreaRef, completionAreaRef)
 
   useEffect(() => {
-    init()
+     init()
   }, [])
 
   const containerStyle = css({
@@ -101,6 +103,18 @@ function Sidebar () {
     })
   }
 
+  if(state.config === undefined) {
+    return (
+      <div css={{
+        display: 'flex',
+        height: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}>
+        <Spinner />
+      </div>
+    )
+  }
 
   return (
     <div css={containerStyle}>
