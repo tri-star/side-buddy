@@ -1,7 +1,8 @@
 import { css } from "@emotion/react"
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 import { useSidebar } from "./use-sidebar"
 import { type ChatRole } from "@/domain/chat"
+import { useAutoScroll } from "./use-auto-scroll"
 
 function Sidebar () {
 
@@ -16,6 +17,10 @@ function Sidebar () {
     submit,
     handleKeyDown,
   } = useSidebar()
+
+  const conversationAreaRef = useRef<HTMLDivElement>(null)
+  const completionAreaRef = useRef<HTMLDivElement>(null)
+  useAutoScroll(conversationAreaRef, completionAreaRef)
 
   useEffect(() => {
     init()
@@ -99,7 +104,7 @@ function Sidebar () {
 
   return (
     <div css={containerStyle}>
-      <div css={conversationAreaStyle}>
+      <div css={conversationAreaStyle} ref={conversationAreaRef}>
 
         {thread.messages.map(message => {
           return (
@@ -110,7 +115,9 @@ function Sidebar () {
         })
         }
 
-        {completion !== '' && <div css={threadMessageStyle.assistant}>{completion}</div>}
+        <div css={threadMessageStyle.assistant} ref={completionAreaRef} hidden={completion === ''}>
+          {completion}
+        </div>
 
       </div>
       <div css={questionInputAreaStyle}>
