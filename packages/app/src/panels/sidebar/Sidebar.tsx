@@ -14,6 +14,7 @@ function Sidebar () {
     thread,
     canSubmit,
     submit,
+    handleKeyDown,
   } = useSidebar()
 
   useEffect(() => {
@@ -110,7 +111,8 @@ function Sidebar () {
         })
         }
 
-        {completion}
+        {completion !== '' && <div css={threadMessageStyle.assistant}>{completion}</div>}
+
       </div>
       <div css={questionInputAreaStyle}>
         <div css={formRowStyle}>
@@ -130,7 +132,12 @@ function Sidebar () {
             max={1}
           />
         </div>
-        <textarea css={textAreaStyle} onChange={e => { setMessage(e.target.value); }} value={message}></textarea>
+        <textarea
+          css={textAreaStyle}
+          onChange={e => { setMessage(e.target.value); }}
+          value={message}
+          onKeyDown={e => { handleKeyDown(e); }}
+        />
         <button css={buttonStyle} disabled={!canSubmit()} onClick={() => {void submit()}}>Submit</button>
       </div>
     </div>
