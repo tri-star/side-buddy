@@ -133,7 +133,7 @@ function Sidebar () {
         })
         }
 
-        <div css={threadMessageStyle.assistant} ref={completionAreaRef} hidden={completion === ''}>
+        <div css={threadMessageStyle.assistant} ref={completionAreaRef}>
           {completion}
         </div>
 

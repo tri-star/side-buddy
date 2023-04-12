@@ -4,6 +4,11 @@ import * as vscode from 'vscode'
 import { sendMessage } from '@/api/vs-code/send-message'
 import { panelMessageSchema } from '@/domain/panel-message'
 import { VsCodeLogger } from '@/logging/logger'
+import {
+  ConfigStorage,
+  type ConfigStorageInterface,
+} from '@/api/vs-code/config-storage'
+import { type AppConfig } from '@/domain/app-config'
 
 type ViteManifest = {
   'index.html': {
@@ -22,12 +27,19 @@ export function registerSideBarPanel(context: vscode.ExtensionContext) {
 }
 
 class SidebarProvider implements vscode.WebviewViewProvider {
+  private _config: AppConfig | undefined
+  private readonly _configStorage: ConfigStorageInterface
   private _view?: vscode.WebviewView
   private readonly _extensionUri: vscode.Uri
   private readonly _extensionPath: string
   private readonly _logger: VsCodeLogger
 
-  constructor(context: vscode.ExtensionContext) {
+  constructor(
+    context: vscode.ExtensionContext,
+    configStorage: ConfigStorageInterface = new ConfigStorage(context)
+  ) {
+    this._config = undefined
+    this._configStorage = configStorage
     this._extensionUri = context.extensionUri
     this._extensionPath = context.extensionPath
     this._logger = new VsCodeLogger()
@@ -44,17 +56,51 @@ class SidebarProvider implements vscode.WebviewViewProvider {
     const parsedMessage = panelMessageSchema.parse(message)
     switch (parsedMessage.type) {
       case 'loaded':
-        void sendMessage(this._view.webview, {
-          type: 'updateConfig',
-          config: {
-            apiKey: 'hogehoge',
-            defaultTemperature: 0.0,
-          },
-        })
+        void this.handleWebViewLoaded()
+        break
+      case 'set-api-key':
+        void this.handleSetApiKeyStored(parsedMessage.apiKey)
         break
       case 'log':
         this._logger.log(parsedMessage.level, parsedMessage.message)
     }
+  }
+
+  /**
+   * WebView(React側)のロードが完了した時の処理
+   */
+  private async handleWebViewLoaded() {
+    this._config = await this._configStorage.load()
+    await this.notifyConfigUpdated()
+  }
+
+  /**
+   * WebViewからAPIキーを設定した通知を受け取った時
+   * @param apiKey
+   */
+  private async handleSetApiKeyStored(apiKey: string) {
+    if (this._config == null) {
+      throw new Error('_configがセットされていません')
+    }
+    this._config.apiKey = apiKey
+    await this._configStorage.save(this._config)
+    await this.notifyConfigUpdated()
+  }
+
+  /**
+   * 設定が更新されたことをWebView側に知らせる
+   */
+  private async notifyConfigUpdated() {
+    if (this._config == null) {
+      throw new Error('_configがセットされていません')
+    }
+    if (this._view == null) {
+      throw new Error('_viewがセットされていません')
+    }
+    await sendMessage(this._view.webview, {
+      type: 'updateConfig',
+      config: this._config,
+    })
   }
 
   /**

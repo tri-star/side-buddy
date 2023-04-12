@@ -19,6 +19,10 @@ export const vsCodeApi = isVsCodeEnv()
   ? acquireVsCodeApi()
   : acquireVsCodeApiStub()
 
+/**
+ * VSCodeのWebViewが提供するacquireVsCodeApi()をエミュレートする
+ * VSCode外で開発する時に使用する
+ */
 function acquireVsCodeApiStub(): VsCodeApi {
   return {
     postMessage<T>(message: T) {
