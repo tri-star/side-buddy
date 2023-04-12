@@ -53,7 +53,14 @@ function Sidebar () {
     width: '100%',
     height: '100%',
     minHeight: '100px',
-    resize: 'vertical'
+    resize: 'none',
+    background: 'var(--app-input-background)',
+    boxSizing: 'border-box',
+    border: '1px solid var(--app-editor-border)',
+    color: 'var(--app-editor-foreground)',
+    '&:focus': {
+      outline: '1px solid var(--app-editor-focus-outline)',
+    }
   })
 
   const formRowStyle = css({
@@ -75,6 +82,17 @@ function Sidebar () {
   const buttonStyle = css({
     width: '100%',
     padding: '10px 5px',
+    color: 'var(--app-button-foreground)',
+    backgroundColor: 'var(--app-button-background)',
+    border: '1px solid var(--app-button-border)',
+    '&:hover': {
+      backgroundColor: 'var(--app-button-hoverBackground)',
+    },
+    '&:disabled': {
+      color: 'var(--app-button-disabledForeground)',
+      backgroundColor: 'var(--app-button-disabledBackground)',
+    },
+
   })
 
   const threadMessageStyle = {
@@ -85,7 +103,7 @@ function Sidebar () {
       whiteSpace: 'pre-wrap',
     }),
     assistant: css({
-      backgroundColor: '#f0f0f0',
+      backgroundColor: 'var(--app-message-assistant-background)',
       padding: '10px',
       borderRadius: '5px',
       marginTop: '20px',
@@ -94,7 +112,7 @@ function Sidebar () {
       whiteSpace: 'pre-wrap',
     }),
     user: css({
-      backgroundColor: '#e0e0e0',
+      backgroundColor: 'var(--app-message-user-background)',
       padding: '10px',
       borderRadius: '5px',
       marginTop: '20px',
@@ -133,7 +151,7 @@ function Sidebar () {
         })
         }
 
-        <div css={threadMessageStyle.assistant} ref={completionAreaRef}>
+        <div css={threadMessageStyle.assistant} ref={completionAreaRef} hidden={(completion === '')}>
           {completion}
         </div>
 

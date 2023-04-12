@@ -1,7 +1,33 @@
+:root {
+  --app-editor-foreground: var(--vscode-editor-foreground, rgba(0, 0, 0, 1));
+  --app-editor-border: var(--vscode-editorWidget-border, #ccc);
+  --app-editor-focus-outline: var(--vscode-focusBorder, #007acc);
+  --app-editor-background: var(
+    --vscode-editor-background,
+    rgba(255, 255, 255, 1) ;
+  );
+  --app-message-assistant-background: var(
+    --vscode-editor-inactiveSelectionBackground,
+    '#f0f0f0'
+  );
+  --app-message-user-background: var(--vscode-editor-background, '#e0e0e0');
+  --app-input-background: var(--vscode-editor-background, #fff);
+
+  --app-button-foreground: var(--vscode-button-foreground, '#000');
+  --app-button-background: var(--vscode-button-background, '#ccc');
+  --app-button-border: var(--vscode-button-border, '#888');
+  --app-button-hoverBackground: var(--vscode-button-hoverBackground, '#eee');
+  --app-button-disabledForeground: var(--vscode-disabledForeground, '#ccc');
+  --app-button-disabledBackground: var(--vscode-list-dropBackground, '#ccc');
+  --app-button-hoverBackground: var(--vscode-button-hoverBackground, '#eee');
+}
+
 html,
 body,
 #root {
   height: 100%;
+  color: var(--app-editor-foreground);
+  box-sizing: border-box;
 }
 
 p {
