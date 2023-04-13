@@ -5,6 +5,7 @@ import { roleSchema } from './chat'
 export const appStateSchema = zod.object({
   config: appConfigSchema.optional(),
   role: roleSchema,
+  temperature: zod.number(),
   message: zod.string(),
 })
 

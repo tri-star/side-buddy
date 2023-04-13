@@ -13,9 +13,9 @@ export function useSidebar() {
   const [state, setState] = useState<AppState>({
     config: undefined,
     role: 'user',
+    temperature: 0.0,
     message: '',
   })
-  const [temperature, setTemperature] = useState<number>(0.0)
   const [completion, setCompletion] = useState<string>('')
   const [thread, setThread] = useState<Thread>({
     messages: [],
@@ -46,7 +46,6 @@ export function useSidebar() {
           updateState({
             config: message.config,
           })
-          setTemperature(message.config?.defaultTemperature ?? 0.0)
       }
     },
     [updateState]
@@ -92,10 +91,25 @@ export function useSidebar() {
     [updateState]
   )
 
+  /**
+   * ロールの変更
+   */
   const handleRoleChange = useCallback(
     (role: ChatRole) => {
       updateState({
         role,
+      })
+    },
+    [updateState]
+  )
+
+  /**
+   * temperatureの変更
+   */
+  const handleTemperatureChange = useCallback(
+    (temperature: number) => {
+      updateState({
+        temperature,
       })
     },
     [updateState]
@@ -121,7 +135,7 @@ export function useSidebar() {
     let completionResult = ''
     for await (const chunk of requestChatCompletion(
       state.config?.apiKey ?? '',
-      temperature,
+      state.temperature,
       {
         messages: [
           ...thread.messages,
@@ -147,7 +161,7 @@ export function useSidebar() {
       ],
     }))
     setCompletion('')
-  }, [temperature, state, thread, updateState])
+  }, [state, thread, updateState])
 
   const handleKeyDown = useCallback(
     (event: KeyboardEvent<HTMLTextAreaElement>) => {
@@ -161,9 +175,8 @@ export function useSidebar() {
   return {
     init,
     state,
-    temperature,
-    setTemperature,
     handleRoleChange,
+    handleTemperatureChange,
     handleMessageChange,
     completion,
     setCompletion,

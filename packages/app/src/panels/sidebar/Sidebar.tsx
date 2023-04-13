@@ -10,7 +10,7 @@ function Sidebar () {
 
   const {
     init,
-    temperature, setTemperature,
+    handleTemperatureChange,
     handleRoleChange,
     handleMessageChange,
     completion,
@@ -168,8 +168,8 @@ function Sidebar () {
           <input
             type="number"
             css={temperatureInputStyle}
-            value={temperature}
-            onChange={e => { setTemperature(parseFloat(e.target.value)); } }
+            value={state.temperature}
+            onChange={e => { handleTemperatureChange(parseFloat(e.target.value)); } }
             step={0.1}
             max={1}
           />
