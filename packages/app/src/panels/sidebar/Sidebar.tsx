@@ -14,7 +14,6 @@ function Sidebar () {
     handleRoleChange,
     handleMessageChange,
     completion,
-    thread,
     canSubmit,
     submit,
     handleKeyDown,
@@ -142,7 +141,7 @@ function Sidebar () {
     <div css={containerStyle}>
       <div css={conversationAreaStyle} ref={conversationAreaRef}>
 
-        {thread.messages.map(message => {
+        {state.thread.messages.map(message => {
           return (
             <div key={message.id} css={threadMessageStyle[message.role]}>
               <p>{message.message}</p>

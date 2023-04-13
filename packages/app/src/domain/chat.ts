@@ -18,6 +18,8 @@ export const chatRequestSchema = zod.object({
 
 export type ChatRequest = zod.infer<typeof chatRequestSchema>
 
+export type ChatMessage = zod.infer<typeof chatMessageSchema>
+
 export type ChatRole = zod.infer<typeof chatMessageSchema>['role']
 
 export const chatRoles: ChatRole[] = ['system', 'assistant', 'user']

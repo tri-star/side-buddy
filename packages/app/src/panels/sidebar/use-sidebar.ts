@@ -3,9 +3,12 @@ import { listenExtensionMessage } from '@/api/vs-code/listen-extension-message'
 import { sendPanelMessage } from '@/api/vs-code/send-panel-message'
 import { type ExtensionMessage } from '@/domain/extension-message'
 import { type AppState } from '@/domain/app-state'
-import { chatRequestSchema, type ChatRole } from '@/domain/chat'
+import {
+  type ChatMessage,
+  chatRequestSchema,
+  type ChatRole,
+} from '@/domain/chat'
 import { requestChatCompletion } from '@/api/open-ai/chat-api'
-import { type Thread } from '@/domain/thread'
 import * as ulid from 'ulid'
 import { vsCodeApi } from '@/api/vs-code/vs-code-api'
 
@@ -15,11 +18,11 @@ export function useSidebar() {
     role: 'user',
     temperature: 0.0,
     message: '',
+    thread: {
+      messages: [],
+    },
   })
   const [completion, setCompletion] = useState<string>('')
-  const [thread, setThread] = useState<Thread>({
-    messages: [],
-  })
 
   const updateState = useCallback((newState: Partial<AppState>) => {
     setState((prev) => {
@@ -31,6 +34,24 @@ export function useSidebar() {
       return {
         ...prev,
         ...newState,
+      }
+    })
+  }, [])
+
+  const addThreadMessage = useCallback((message: ChatMessage) => {
+    setState((prev) => {
+      vsCodeApi.setState<AppState>({
+        ...prev,
+        thread: {
+          messages: [...prev.thread.messages, message],
+        },
+      })
+
+      return {
+        ...prev,
+        thread: {
+          messages: [...prev.thread.messages, message],
+        },
       }
     })
   }, [])
@@ -120,16 +141,11 @@ export function useSidebar() {
    */
   const submit = useCallback(async () => {
     const messageId = ulid.ulid()
-    setThread((prev) => ({
-      messages: [
-        ...prev.messages,
-        {
-          id: messageId,
-          role: state.role,
-          message: state.message,
-        },
-      ],
-    }))
+    addThreadMessage({
+      id: messageId,
+      role: state.role,
+      message: state.message,
+    })
     updateState({ message: '' })
     setCompletion('')
     let completionResult = ''
@@ -138,7 +154,7 @@ export function useSidebar() {
       state.temperature,
       {
         messages: [
-          ...thread.messages,
+          ...state.thread.messages,
           {
             id: messageId,
             role: state.role,
@@ -150,18 +166,13 @@ export function useSidebar() {
       setCompletion((prev) => prev + chunk)
       completionResult += chunk
     }
-    setThread((prev) => ({
-      messages: [
-        ...prev.messages,
-        {
-          id: ulid.ulid(),
-          role: 'assistant',
-          message: completionResult,
-        },
-      ],
-    }))
+    addThreadMessage({
+      id: ulid.ulid(),
+      role: 'assistant',
+      message: completionResult,
+    })
     setCompletion('')
-  }, [state, thread, updateState])
+  }, [state, updateState, addThreadMessage])
 
   const handleKeyDown = useCallback(
     (event: KeyboardEvent<HTMLTextAreaElement>) => {
@@ -180,7 +191,6 @@ export function useSidebar() {
     handleMessageChange,
     completion,
     setCompletion,
-    thread,
     canSubmit,
     submit,
     handleKeyDown,
