@@ -8,7 +8,7 @@ import {
   chatRequestSchema,
   type ChatRole,
 } from '@/domain/chat'
-import { requestChatCompletion } from '@/api/open-ai/chat-api'
+import { gernerateChatStream } from '@/api/open-ai/chat-api'
 import * as ulid from 'ulid'
 import { vsCodeApi } from '@/api/vs-code/vs-code-api'
 
@@ -24,6 +24,9 @@ export function useSidebar() {
   })
   const [completion, setCompletion] = useState<string>('')
 
+  /**
+   * ReactのuseStateとVSCodeのstateの両方を更新する
+   */
   const updateState = useCallback((newState: Partial<AppState>) => {
     setState((prev) => {
       vsCodeApi.setState<AppState>({
@@ -38,6 +41,9 @@ export function useSidebar() {
     })
   }, [])
 
+  /**
+   * スレッドにメッセージを追加し、useStateとVSCodeのStateを更新する
+   */
   const addThreadMessage = useCallback((message: ChatMessage) => {
     setState((prev) => {
       vsCodeApi.setState<AppState>({
@@ -149,20 +155,17 @@ export function useSidebar() {
     updateState({ message: '' })
     setCompletion('')
     let completionResult = ''
-    for await (const chunk of requestChatCompletion(
-      state.config?.apiKey ?? '',
-      state.temperature,
-      {
-        messages: [
-          ...state.thread.messages,
-          {
-            id: messageId,
-            role: state.role,
-            message: state.message,
-          },
-        ],
-      }
-    )) {
+    for await (const chunk of gernerateChatStream(state.config?.apiKey ?? '', {
+      temperature: state.temperature,
+      messages: [
+        ...state.thread.messages,
+        {
+          id: messageId,
+          role: state.role,
+          message: state.message,
+        },
+      ],
+    })) {
       setCompletion((prev) => prev + chunk)
       completionResult += chunk
     }

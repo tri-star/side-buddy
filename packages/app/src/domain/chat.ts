@@ -13,6 +13,7 @@ export const chatMessageSchema = zod.object({
 })
 
 export const chatRequestSchema = zod.object({
+  temperature: zod.number().min(0).max(2),
   messages: zod.array(chatMessageSchema).min(1),
 })
 

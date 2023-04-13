@@ -29,9 +29,13 @@ type ChatCompletionResponseStreamEntry = {
   choices: ChatCompletionResponseChoice[]
 }
 
-export async function* requestChatCompletion(
+/**
+ * チャットの内容をstreamとしてgeneratorで生成する
+ * @param apiKey
+ * @param request
+ */
+export async function* gernerateChatStream(
   apiKey: string,
-  temperature: number,
   request: ChatRequest
 ) {
   const response = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -48,7 +52,7 @@ export async function* requestChatCompletion(
           content: message.message,
         }
       }),
-      temperature,
+      temperature: request.temperature,
       frequency_penalty: 0,
       presence_penalty: 0,
       max_tokens: 1000,
@@ -63,6 +67,7 @@ export async function* requestChatCompletion(
   const decoder = new TextDecoder()
   const reader = response.body.getReader()
 
+  // TODO: ServerSentEventのレスポンスをパースする処理は独立させテストを実装する
   let stopper = 100000
   while (true && stopper > 0) {
     const { done, value } = await reader.read()
