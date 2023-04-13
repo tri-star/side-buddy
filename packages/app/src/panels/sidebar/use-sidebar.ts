@@ -7,14 +7,15 @@ import { chatRequestSchema, type ChatRole } from '@/domain/chat'
 import { requestChatCompletion } from '@/api/open-ai/chat-api'
 import { type Thread } from '@/domain/thread'
 import * as ulid from 'ulid'
+import { vsCodeApi } from '@/api/vs-code/vs-code-api'
 
 export function useSidebar() {
   const [state, setState] = useState<AppState>({
     config: undefined,
+    message: '',
   })
   const [temperature, setTemperature] = useState<number>(0.0)
   const [role, setRole] = useState<ChatRole>('user')
-  const [message, setMessage] = useState<string>('')
   const [completion, setCompletion] = useState<string>('')
   const [thread, setThread] = useState<Thread>({
     messages: [],
@@ -44,7 +45,21 @@ export function useSidebar() {
   const init = useCallback(() => {
     listenExtensionMessage(handleExtensionMessage)
     sendPanelMessage({ type: 'loaded' })
+    const state = vsCodeApi.getState<AppState>()
+    if (state != null) {
+      setState(state)
+    }
   }, [handleExtensionMessage])
+
+  const updateState = useCallback(
+    (newState: Partial<AppState>) => {
+      setState({
+        ...state,
+        ...newState,
+      })
+    },
+    [state]
+  )
 
   /**
    * 送信可能かどうかを返す
@@ -55,12 +70,27 @@ export function useSidebar() {
         {
           id: ulid.ulid(),
           role,
-          message,
+          message: state.message,
         },
       ],
     })
     return result.success && completion === ''
-  }, [role, message, completion])
+  }, [role, state, completion])
+
+  /**
+   * メッセージ欄入力時の処理
+   */
+  const handleMessageChange = useCallback((m: string) => {
+    setState((prev) => {
+      return {
+        ...prev,
+        message: m,
+      }
+    })
+    vsCodeApi.setState<AppState>({
+      message: m,
+    })
+  }, [])
 
   /**
    * 送信ボタンの処理
@@ -73,11 +103,11 @@ export function useSidebar() {
         {
           id: messageId,
           role,
-          message,
+          message: state.message,
         },
       ],
     }))
-    setMessage('')
+    updateState({ message: '' })
     setCompletion('')
     let completionResult = ''
     for await (const chunk of requestChatCompletion(
@@ -89,7 +119,7 @@ export function useSidebar() {
           {
             id: messageId,
             role,
-            message,
+            message: state.message,
           },
         ],
       }
@@ -108,7 +138,7 @@ export function useSidebar() {
       ],
     }))
     setCompletion('')
-  }, [role, temperature, message, state, thread])
+  }, [role, temperature, state, thread, updateState])
 
   const handleKeyDown = useCallback(
     (event: KeyboardEvent<HTMLTextAreaElement>) => {
@@ -126,8 +156,7 @@ export function useSidebar() {
     setTemperature,
     role,
     setRole,
-    message,
-    setMessage,
+    handleMessageChange,
     completion,
     setCompletion,
     thread,

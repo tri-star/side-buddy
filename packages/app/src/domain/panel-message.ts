@@ -1,4 +1,5 @@
 import zod from 'zod'
+import { chatMessageSchema } from './chat'
 
 const loadedSchema = zod.object({
   type: zod.literal('loaded'),
@@ -20,10 +21,16 @@ const setApiKeySchema = zod.object({
   apiKey: zod.string().min(1),
 })
 
+const addThreadMessageSchema = zod.object({
+  type: zod.literal('add-thread-message'),
+  message: chatMessageSchema,
+})
+
 export const panelMessageSchema = zod.discriminatedUnion('type', [
   loadedSchema,
   logMessageSchema,
   setApiKeySchema,
+  addThreadMessageSchema,
 ])
 
 export type PanelMessage = zod.infer<typeof panelMessageSchema>

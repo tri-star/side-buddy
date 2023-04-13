@@ -12,7 +12,7 @@ function Sidebar () {
     init,
     temperature, setTemperature,
     role, setRole,
-    message, setMessage,
+    handleMessageChange,
     completion,
     thread,
     canSubmit,
@@ -176,8 +176,8 @@ function Sidebar () {
         </div>
         <textarea
           css={textAreaStyle}
-          onChange={e => { setMessage(e.target.value); }}
-          value={message}
+          onChange={e => { handleMessageChange(e.target.value); }}
+          value={state.message}
           onKeyDown={e => { handleKeyDown(e); }}
         />
         <button css={buttonStyle} disabled={!canSubmit()} onClick={() => {void submit()}}>Submit</button>
