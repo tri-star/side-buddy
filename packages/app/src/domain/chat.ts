@@ -1,12 +1,14 @@
 import zod from 'zod'
 
+export const roleSchema = zod.union([
+  zod.literal('system'),
+  zod.literal('assistant'),
+  zod.literal('user'),
+])
+
 export const chatMessageSchema = zod.object({
   id: zod.string().min(1),
-  role: zod.union([
-    zod.literal('system'),
-    zod.literal('assistant'),
-    zod.literal('user'),
-  ]),
+  role: roleSchema,
   message: zod.string().min(1),
 })
 

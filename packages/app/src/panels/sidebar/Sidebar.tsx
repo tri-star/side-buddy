@@ -11,7 +11,7 @@ function Sidebar () {
   const {
     init,
     temperature, setTemperature,
-    role, setRole,
+    handleRoleChange,
     handleMessageChange,
     completion,
     thread,
@@ -159,7 +159,7 @@ function Sidebar () {
       <div css={questionInputAreaStyle}>
         <div css={formRowStyle}>
           <p css={formLabelStyle}>Role</p>
-          <select value={role} onChange={ e => { setRole(e.target.value as ChatRole) } }>
+          <select value={state.role} onChange={ e => { handleRoleChange(e.target.value as ChatRole) } }>
             <option>system</option>
             <option>assistant</option>
             <option>user</option>

@@ -12,14 +12,28 @@ import { vsCodeApi } from '@/api/vs-code/vs-code-api'
 export function useSidebar() {
   const [state, setState] = useState<AppState>({
     config: undefined,
+    role: 'user',
     message: '',
   })
   const [temperature, setTemperature] = useState<number>(0.0)
-  const [role, setRole] = useState<ChatRole>('user')
   const [completion, setCompletion] = useState<string>('')
   const [thread, setThread] = useState<Thread>({
     messages: [],
   })
+
+  const updateState = useCallback((newState: Partial<AppState>) => {
+    setState((prev) => {
+      vsCodeApi.setState<AppState>({
+        ...prev,
+        ...newState,
+      })
+
+      return {
+        ...prev,
+        ...newState,
+      }
+    })
+  }, [])
 
   /**
    * 拡張機能からのメッセージを受け取り処理する
@@ -29,14 +43,13 @@ export function useSidebar() {
     (message: ExtensionMessage) => {
       switch (message.type) {
         case 'updateConfig':
-          setState({
-            ...state,
+          updateState({
             config: message.config,
           })
           setTemperature(message.config?.defaultTemperature ?? 0.0)
       }
     },
-    [state]
+    [updateState]
   )
 
   /**
@@ -47,19 +60,9 @@ export function useSidebar() {
     sendPanelMessage({ type: 'loaded' })
     const state = vsCodeApi.getState<AppState>()
     if (state != null) {
-      setState(state)
+      updateState(state)
     }
-  }, [handleExtensionMessage])
-
-  const updateState = useCallback(
-    (newState: Partial<AppState>) => {
-      setState({
-        ...state,
-        ...newState,
-      })
-    },
-    [state]
-  )
+  }, [updateState, handleExtensionMessage])
 
   /**
    * 送信可能かどうかを返す
@@ -69,28 +72,34 @@ export function useSidebar() {
       messages: [
         {
           id: ulid.ulid(),
-          role,
+          role: state.role,
           message: state.message,
         },
       ],
     })
     return result.success && completion === ''
-  }, [role, state, completion])
+  }, [state, completion])
 
   /**
    * メッセージ欄入力時の処理
    */
-  const handleMessageChange = useCallback((m: string) => {
-    setState((prev) => {
-      return {
-        ...prev,
-        message: m,
-      }
-    })
-    vsCodeApi.setState<AppState>({
-      message: m,
-    })
-  }, [])
+  const handleMessageChange = useCallback(
+    (message: string) => {
+      updateState({
+        message,
+      })
+    },
+    [updateState]
+  )
+
+  const handleRoleChange = useCallback(
+    (role: ChatRole) => {
+      updateState({
+        role,
+      })
+    },
+    [updateState]
+  )
 
   /**
    * 送信ボタンの処理
@@ -102,7 +111,7 @@ export function useSidebar() {
         ...prev.messages,
         {
           id: messageId,
-          role,
+          role: state.role,
           message: state.message,
         },
       ],
@@ -118,7 +127,7 @@ export function useSidebar() {
           ...thread.messages,
           {
             id: messageId,
-            role,
+            role: state.role,
             message: state.message,
           },
         ],
@@ -138,7 +147,7 @@ export function useSidebar() {
       ],
     }))
     setCompletion('')
-  }, [role, temperature, state, thread, updateState])
+  }, [temperature, state, thread, updateState])
 
   const handleKeyDown = useCallback(
     (event: KeyboardEvent<HTMLTextAreaElement>) => {
@@ -154,8 +163,7 @@ export function useSidebar() {
     state,
     temperature,
     setTemperature,
-    role,
-    setRole,
+    handleRoleChange,
     handleMessageChange,
     completion,
     setCompletion,

@@ -7,7 +7,7 @@ export type VsCodeApi = {
   postMessage: <T>(message: T) => void
 
   getState: <T>() => T | undefined
-  setState: <T>(state: Partial<T>) => void
+  setState: <T>(state: T) => void
 }
 
 declare const acquireVsCodeApi: () => VsCodeApi
