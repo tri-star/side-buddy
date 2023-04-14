@@ -5,6 +5,8 @@ import { type ChatRole } from "@/domain/chat"
 import { useAutoScroll } from "./use-auto-scroll"
 import { Spinner } from "@/components/Spinner"
 import { ApiKeyForm } from "./ApiKeyForm"
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faSave } from '@fortawesome/free-regular-svg-icons'
 
 function Sidebar () {
 
@@ -37,6 +39,8 @@ function Sidebar () {
 
   const headerStyle = css({
     display: 'flex',
+  })
+  const saveButtonStyle = css({
   })
 
   const conversationAreaStyle = css({
@@ -83,7 +87,7 @@ function Sidebar () {
     width: '50px',
   })
 
-  const buttonStyle = css({
+  const submitButtonStyle = css({
     width: '100%',
     padding: '10px 5px',
     color: 'var(--app-button-foreground)',
@@ -151,6 +155,7 @@ function Sidebar () {
           value={state.thread.title}
           onChange={e => { handleThreadTitleChange(e.target.value); }}
         />
+        <button css={saveButtonStyle}><FontAwesomeIcon icon={faSave}/></button>
       </div>
       <div css={conversationAreaStyle} ref={conversationAreaRef}>
 
@@ -192,7 +197,7 @@ function Sidebar () {
           value={state.message}
           onKeyDown={e => { handleKeyDown(e); }}
         />
-        <button css={buttonStyle} disabled={!canSubmit()} onClick={() => {void submit()}}>Submit</button>
+        <button css={submitButtonStyle} disabled={!canSubmit()} onClick={() => {void submit()}}>Submit</button>
       </div>
     </div>
   )
