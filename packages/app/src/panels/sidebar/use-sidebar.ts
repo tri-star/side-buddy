@@ -244,6 +244,18 @@ export function useSidebar() {
     [submit]
   )
 
+  const handleClearThread = useCallback(() => {
+    if (!confirm('スレッドをクリアしますか？')) {
+      return
+    }
+    updateState({
+      thread: {
+        title: '',
+        messages: [],
+      },
+    })
+  }, [updateState])
+
   return {
     init,
     state,
@@ -256,5 +268,6 @@ export function useSidebar() {
     canSubmit,
     submit,
     handleKeyDown,
+    handleClearThread,
   }
 }

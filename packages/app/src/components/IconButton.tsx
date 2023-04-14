@@ -1,16 +1,18 @@
 import { css } from "@emotion/react"
+import { type IconDefinition } from "@fortawesome/fontawesome-common-types"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 type IconButtonProps = {
   onClick: () => void
-  title: string,
+  icon: IconDefinition,
 
 }
 
 export function IconButton(props: IconButtonProps) {
 
-  const { title, onClick } = props
+  const { icon, onClick } = props
   const buttonStyle = css({
-    padding: '10px 5px',
+    // padding: '10px 5px',
     color: 'var(--app-button-foreground)',
     backgroundColor: 'var(--app-button-background)',
     border: '1px solid var(--app-button-border)',
@@ -26,6 +28,6 @@ export function IconButton(props: IconButtonProps) {
 
 
   return (
-    <button css={buttonStyle} onClick={() => { onClick(); }}>{title}</button>
+    <button css={buttonStyle} onClick={() => { onClick(); }}><FontAwesomeIcon icon={icon}/></button>
   )
 }
