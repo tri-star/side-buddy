@@ -1,8 +1,6 @@
 import * as path from 'path'
 import * as fs from 'fs'
 import * as vscode from 'vscode'
-import { sendMessage } from '@/api/vs-code/send-message'
-import { panelMessageSchema } from '@/domain/panel-message'
 import { VsCodeLogger } from '@/logging/logger'
 import {
   ConfigStorage,
@@ -11,23 +9,23 @@ import {
 import { type AppConfig } from '@/domain/app-config'
 
 type ViteManifest = {
-  'index.html': {
+  'thread-list.html': {
     file: string
     css: string[]
   }
 }
 
-export function registerSideBarPanel(context: vscode.ExtensionContext) {
+export function registerThreadListPanel(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.window.registerWebviewViewProvider(
-      'side-buddy.sidebar',
-      new SidebarProvider(context)
+      'side-buddy.thread-list',
+      new ThreadListProvider(context)
     )
   )
 }
 
-class SidebarProvider implements vscode.WebviewViewProvider {
-  private _config: AppConfig | undefined
+class ThreadListProvider implements vscode.WebviewViewProvider {
+  private readonly _config: AppConfig | undefined
   private readonly _configStorage: ConfigStorageInterface
   private _view?: vscode.WebviewView
   private readonly _extensionUri: vscode.Uri
@@ -53,54 +51,9 @@ class SidebarProvider implements vscode.WebviewViewProvider {
     if (this._view == null) {
       throw new Error('_viewがセットされていません')
     }
-    const parsedMessage = panelMessageSchema.parse(message)
-    switch (parsedMessage.type) {
-      case 'loaded':
-        void this.handleWebViewLoaded()
-        break
-      case 'set-api-key':
-        void this.handleSetApiKeyStored(parsedMessage.apiKey)
-        break
-      case 'log':
-        this._logger.log(parsedMessage.level, parsedMessage.message)
-    }
-  }
-
-  /**
-   * WebView(React側)のロードが完了した時の処理
-   */
-  private async handleWebViewLoaded() {
-    this._config = await this._configStorage.load()
-    await this.notifyConfigUpdated()
-  }
-
-  /**
-   * WebViewからAPIキーを設定した通知を受け取った時
-   * @param apiKey
-   */
-  private async handleSetApiKeyStored(apiKey: string) {
-    if (this._config == null) {
-      throw new Error('_configがセットされていません')
-    }
-    this._config.apiKey = apiKey
-    await this._configStorage.save(this._config)
-    await this.notifyConfigUpdated()
-  }
-
-  /**
-   * 設定が更新されたことをWebView側に知らせる
-   */
-  private async notifyConfigUpdated() {
-    if (this._config == null) {
-      throw new Error('_configがセットされていません')
-    }
-    if (this._view == null) {
-      throw new Error('_viewがセットされていません')
-    }
-    await sendMessage(this._view.webview, {
-      type: 'updateConfig',
-      config: this._config,
-    })
+    // const parsedMessage = panelMessageSchema.parse(message)
+    // switch (parsedMessage.type) {
+    // }
   }
 
   /**
@@ -118,7 +71,6 @@ class SidebarProvider implements vscode.WebviewViewProvider {
       enableScripts: true,
       localResourceRoots: [this._extensionUri],
     }
-
     // WebView用のHTMLの構築は他画面でも共通化できる部分が多いので、
     // 今後ここを共通化していくことを検討する。
     // - manifestからUriを生成する
@@ -135,7 +87,7 @@ class SidebarProvider implements vscode.WebviewViewProvider {
         'packages',
         'app',
         'dist',
-        manifest['index.html'].file
+        manifest['thread-list.html'].file
       )
     )
 
@@ -145,7 +97,7 @@ class SidebarProvider implements vscode.WebviewViewProvider {
         'packages',
         'app',
         'dist',
-        manifest['index.html'].css[0]
+        manifest['thread-list.html'].css[0]
       )
     )
 

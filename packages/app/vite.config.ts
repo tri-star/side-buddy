@@ -7,5 +7,11 @@ export default defineConfig({
   plugins: [react(), tsconfigPaths()],
   build: {
     manifest: true,
+    rollupOptions: {
+      input: {
+        index: 'index.html',
+        'thread-list': 'thread-list.html',
+      },
+    },
   },
 })
