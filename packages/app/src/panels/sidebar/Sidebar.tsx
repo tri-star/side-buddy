@@ -10,6 +10,7 @@ function Sidebar () {
 
   const {
     init,
+    handleThreadTitleChange,
     handleTemperatureChange,
     handleRoleChange,
     handleMessageChange,
@@ -32,6 +33,10 @@ function Sidebar () {
     display: 'flex',
     flexDirection: 'column',
     height: '100%',
+  })
+
+  const headerStyle = css({
+    display: 'flex',
   })
 
   const conversationAreaStyle = css({
@@ -139,6 +144,14 @@ function Sidebar () {
 
   return (
     <div css={containerStyle}>
+      <div css={headerStyle}>
+        <input
+          css={{ width: '100%', padding: '5px' }}
+          placeholder="タイトル(省略した場合は自動入力されます)"
+          value={state.thread.title}
+          onChange={e => { handleThreadTitleChange(e.target.value); }}
+        />
+      </div>
       <div css={conversationAreaStyle} ref={conversationAreaRef}>
 
         {state.thread.messages.map(message => {

@@ -13,6 +13,24 @@ import { type ChatRequest } from '@/domain/chat'
 */
 
 type ChatCompletionResponseChoice = {
+  message: {
+    role: string
+    content: string
+  }
+  index: number
+  finish_reason: string | null
+}
+
+type ChatCompletionResponseEntry = {
+  id: string
+  object: string
+  created: number
+  model: string
+  // usege: // トークンの使用状況のオブジェクトが入る。現在未使用
+  choices: ChatCompletionResponseChoice[]
+}
+
+type ChatCompletionResponseStreamChoice = {
   delta?: {
     role?: string
     content?: string
@@ -26,11 +44,48 @@ type ChatCompletionResponseStreamEntry = {
   object: string
   created: number
   model: string
-  choices: ChatCompletionResponseChoice[]
+  choices: ChatCompletionResponseStreamChoice[]
 }
 
 /**
- * チャットの内容をstreamとしてgeneratorで生成する
+ * チャットの返答をそのままレスポンスとして返す
+ * @param apiKey
+ * @param request
+ */
+export async function fetchChatResponse(
+  apiKey: string,
+  request: ChatRequest
+): Promise<ChatCompletionResponseEntry> {
+  const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      model: 'gpt-3.5-turbo',
+      messages: request.messages.map((message) => {
+        return {
+          role: message.role,
+          content: message.message,
+        }
+      }),
+      temperature: request.temperature,
+      frequency_penalty: 0,
+      presence_penalty: 0,
+      max_tokens: 1000,
+    }),
+  })
+
+  if (response == null || response.body == null) {
+    throw new Error('response is null')
+  }
+
+  return (await response.json()) as ChatCompletionResponseEntry
+}
+
+/**
+ * チャットの返答をstreamとしてgeneratorで生成する
  * @param apiKey
  * @param request
  */
@@ -55,7 +110,7 @@ export async function* gernerateChatStream(
       temperature: request.temperature,
       frequency_penalty: 0,
       presence_penalty: 0,
-      max_tokens: 1000,
+      max_tokens: 1000, // TODO: 最大トークン数は外から指定する
       stream: true,
     }),
   })

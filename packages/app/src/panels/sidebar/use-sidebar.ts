@@ -11,6 +11,7 @@ import {
 import { gernerateChatStream } from '@/api/open-ai/chat-api'
 import * as ulid from 'ulid'
 import { vsCodeApi } from '@/api/vs-code/vs-code-api'
+import { fetchTitleFromMessage } from '@/api/open-ai/utility-api'
 
 export function useSidebar() {
   const [state, setState] = useState<AppState>({
@@ -19,6 +20,7 @@ export function useSidebar() {
     temperature: 0.0,
     message: '',
     thread: {
+      title: '',
       messages: [],
     },
   })
@@ -49,6 +51,7 @@ export function useSidebar() {
       vsCodeApi.setState<AppState>({
         ...prev,
         thread: {
+          title: prev.thread.title,
           messages: [...prev.thread.messages, message],
         },
       })
@@ -56,7 +59,31 @@ export function useSidebar() {
       return {
         ...prev,
         thread: {
+          title: prev.thread.title,
           messages: [...prev.thread.messages, message],
+        },
+      }
+    })
+  }, [])
+
+  /**
+   * スレッドにメッセージを追加し、useStateとVSCodeのStateを更新する
+   */
+  const handleThreadTitleChange = useCallback((title: string) => {
+    setState((prev) => {
+      vsCodeApi.setState<AppState>({
+        ...prev,
+        thread: {
+          title,
+          messages: prev.thread.messages,
+        },
+      })
+
+      return {
+        ...prev,
+        thread: {
+          title,
+          messages: prev.thread.messages,
         },
       }
     })
@@ -142,6 +169,20 @@ export function useSidebar() {
     [updateState]
   )
 
+  const generateTitle = useCallback(() => {
+    fetchTitleFromMessage(
+      state.config?.apiKey ?? '',
+      state.message,
+      state.temperature
+    )
+      .then((title) => {
+        handleThreadTitleChange(title)
+      })
+      .catch((e) => {
+        console.error('タイトルの取得に失敗しました')
+      })
+  }, [state])
+
   /**
    * 送信ボタンの処理
    */
@@ -155,6 +196,11 @@ export function useSidebar() {
     updateState({ message: '' })
     setCompletion('')
     let completionResult = ''
+
+    if (state.thread.title === '') {
+      generateTitle()
+    }
+
     for await (const chunk of gernerateChatStream(state.config?.apiKey ?? '', {
       temperature: state.temperature,
       messages: [
@@ -175,7 +221,7 @@ export function useSidebar() {
       message: completionResult,
     })
     setCompletion('')
-  }, [state, updateState, addThreadMessage])
+  }, [state, updateState, addThreadMessage, generateTitle])
 
   const handleKeyDown = useCallback(
     (event: KeyboardEvent<HTMLTextAreaElement>) => {
@@ -189,6 +235,7 @@ export function useSidebar() {
   return {
     init,
     state,
+    handleThreadTitleChange,
     handleRoleChange,
     handleTemperatureChange,
     handleMessageChange,
