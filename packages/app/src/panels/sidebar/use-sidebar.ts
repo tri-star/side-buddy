@@ -67,29 +67,6 @@ export function useSidebar() {
   }, [])
 
   /**
-   * スレッドにメッセージを追加し、useStateとVSCodeのStateを更新する
-   */
-  const handleThreadTitleChange = useCallback((title: string) => {
-    setState((prev) => {
-      vsCodeApi.setState<AppState>({
-        ...prev,
-        thread: {
-          title,
-          messages: prev.thread.messages,
-        },
-      })
-
-      return {
-        ...prev,
-        thread: {
-          title,
-          messages: prev.thread.messages,
-        },
-      }
-    })
-  }, [])
-
-  /**
    * 拡張機能からのメッセージを受け取り処理する
    * @param message
    */
@@ -134,6 +111,29 @@ export function useSidebar() {
   }, [state, completion])
 
   /**
+   * スレッドのタイトルを更新する
+   */
+  const handleThreadTitleChange = useCallback((title: string) => {
+    setState((prev) => {
+      vsCodeApi.setState<AppState>({
+        ...prev,
+        thread: {
+          title,
+          messages: prev.thread.messages,
+        },
+      })
+
+      return {
+        ...prev,
+        thread: {
+          title,
+          messages: prev.thread.messages,
+        },
+      }
+    })
+  }, [])
+
+  /**
    * メッセージ欄入力時の処理
    */
   const handleMessageChange = useCallback(
@@ -146,7 +146,7 @@ export function useSidebar() {
   )
 
   /**
-   * ロールの変更
+   * ロールの変更時の処理
    */
   const handleRoleChange = useCallback(
     (role: ChatRole) => {
@@ -158,7 +158,7 @@ export function useSidebar() {
   )
 
   /**
-   * temperatureの変更
+   * temperatureの変更時の処理
    */
   const handleTemperatureChange = useCallback(
     (temperature: number) => {
@@ -169,6 +169,9 @@ export function useSidebar() {
     [updateState]
   )
 
+  /**
+   * タイトルの自動生成
+   */
   const generateTitle = useCallback(() => {
     fetchTitleFromMessage(
       state.config?.apiKey ?? '',
@@ -181,7 +184,12 @@ export function useSidebar() {
       .catch((e) => {
         console.error('タイトルの取得に失敗しました')
       })
-  }, [state])
+  }, [
+    state.config?.apiKey,
+    state.message,
+    state.temperature,
+    handleThreadTitleChange,
+  ])
 
   /**
    * 送信ボタンの処理
@@ -223,6 +231,9 @@ export function useSidebar() {
     setCompletion('')
   }, [state, updateState, addThreadMessage, generateTitle])
 
+  /**
+   * テキストエリア内のキー押下時の処理。(Ctrl+Enterでの送信の処理)
+   */
   const handleKeyDown = useCallback(
     (event: KeyboardEvent<HTMLTextAreaElement>) => {
       if (event.key === 'Enter' && event.ctrlKey) {
