@@ -21,6 +21,7 @@ function Sidebar () {
     submit,
     handleKeyDown,
     handleClearThread,
+    handleSaveThread,
     state,
   } = useSidebar()
 
@@ -154,7 +155,7 @@ function Sidebar () {
           value={state.thread.title}
           onChange={e => { handleThreadTitleChange(e.target.value); }}
         />
-        <IconButton icon={faSave} onClick={() => {}}/>
+        <IconButton icon={faSave} onClick={handleSaveThread}/>
         <IconButton icon={faTrashCan} onClick={handleClearThread}/>
       </div>
       <div css={conversationAreaStyle} ref={conversationAreaRef}>

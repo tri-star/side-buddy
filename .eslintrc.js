@@ -43,6 +43,14 @@ module.exports = {
     'no-console': 'off',
     '@typescript-eslint/no-empty-function': 'off',
     'react/no-unknown-property': ['error', { ignore: ['css'] }],
+    '@typescript-eslint/no-misused-promises': [
+      'error',
+      {
+        checksVoidReturn: {
+          attributes: false,
+        },
+      },
+    ],
   },
   settings: {
     react: {

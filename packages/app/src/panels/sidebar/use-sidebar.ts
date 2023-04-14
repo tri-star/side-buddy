@@ -12,19 +12,23 @@ import { gernerateChatStream } from '@/api/open-ai/chat-api'
 import * as ulid from 'ulid'
 import { vsCodeApi } from '@/api/vs-code/vs-code-api'
 import { fetchTitleFromMessage } from '@/api/open-ai/utility-api'
+import { type ThreadRepositoryFactory } from '@/api/thread/thread-repository'
+import { defaultThreadRepositoryFactory } from '@/api/thread/thread-repository'
+import { createNewThread } from '@/domain/thread'
 
-export function useSidebar() {
+export function useSidebar(
+  threadRepositoryFactory: ThreadRepositoryFactory = defaultThreadRepositoryFactory
+) {
   const [state, setState] = useState<AppState>({
     config: undefined,
     role: 'user',
     temperature: 0.0,
     message: '',
-    thread: {
-      title: '',
-      messages: [],
-    },
+    thread: createNewThread(),
   })
+
   const [completion, setCompletion] = useState<string>('')
+  const threadRepository = threadRepositoryFactory()
 
   /**
    * ReactのuseStateとVSCodeのstateの両方を更新する
@@ -51,7 +55,7 @@ export function useSidebar() {
       vsCodeApi.setState<AppState>({
         ...prev,
         thread: {
-          title: prev.thread.title,
+          ...prev.thread,
           messages: [...prev.thread.messages, message],
         },
       })
@@ -59,7 +63,7 @@ export function useSidebar() {
       return {
         ...prev,
         thread: {
-          title: prev.thread.title,
+          ...prev.thread,
           messages: [...prev.thread.messages, message],
         },
       }
@@ -119,16 +123,16 @@ export function useSidebar() {
       vsCodeApi.setState<AppState>({
         ...prev,
         thread: {
+          ...prev.thread,
           title,
-          messages: prev.thread.messages,
         },
       })
 
       return {
         ...prev,
         thread: {
+          ...prev.thread,
           title,
-          messages: prev.thread.messages,
         },
       }
     })
@@ -244,17 +248,24 @@ export function useSidebar() {
     [submit]
   )
 
+  /**
+   * スレッドのクリア
+   */
   const handleClearThread = useCallback(() => {
     if (!confirm('スレッドをクリアしますか？')) {
       return
     }
     updateState({
-      thread: {
-        title: '',
-        messages: [],
-      },
+      thread: createNewThread(),
     })
   }, [updateState])
+
+  /**
+   * スレッドの保存
+   */
+  const handleSaveThread = useCallback(async (): Promise<void> => {
+    await threadRepository.save(state.thread)
+  }, [state, threadRepository])
 
   return {
     init,
@@ -269,5 +280,6 @@ export function useSidebar() {
     submit,
     handleKeyDown,
     handleClearThread,
+    handleSaveThread,
   }
 }
