@@ -99,6 +99,7 @@ export function useSidebar() {
    */
   const canSubmit = useCallback((): boolean => {
     const result = chatRequestSchema.safeParse({
+      temperature: state.temperature,
       messages: [
         {
           id: ulid.ulid(),
