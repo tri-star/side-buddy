@@ -25,6 +25,7 @@ export async function startExtensionStub() {
   // 設定情報を通知する
   const message: ExtensionMessage = {
     type: 'updateConfig',
+    source: 'side-buddy-extension',
     config,
   }
 
@@ -50,8 +51,9 @@ export async function startExtensionStub() {
           config.apiKey = message.apiKey
           window.postMessage({
             type: 'updateConfig',
+            source: 'side-buddy-extension',
             config,
-          })
+          } satisfies ExtensionMessage)
           break
       }
     } catch (e) {

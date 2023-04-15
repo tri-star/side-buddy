@@ -17,8 +17,9 @@ export const listenExtensionMessage = (handler: MessageHandler) => {
         data = JSON.parse(data) as PostMessageDataPart
       }
 
-      if (String(data.source ?? '').startsWith('react-devtools')) {
-        // React dev toolsからの通知は対象外
+      if (!String(data.source ?? '').startsWith('side-buddy-extension')) {
+        // パネルメッセージ以外は対象外
+        // (react-dev-toolなどが結構頻繁にメッセージ送信するので除外したい)
         return
       }
 

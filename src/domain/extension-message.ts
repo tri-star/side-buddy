@@ -3,6 +3,7 @@ import { appConfigSchema } from './app-config'
 
 const updateConfigSchema = zod.object({
   type: zod.literal('updateConfig'),
+  source: zod.literal('side-buddy-extension'),
   config: appConfigSchema,
 })
 

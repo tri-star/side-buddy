@@ -99,6 +99,7 @@ class SidebarProvider implements vscode.WebviewViewProvider {
     }
     await sendMessage(this._view.webview, {
       type: 'updateConfig',
+      source: 'side-buddy-extension',
       config: this._config,
     })
   }
