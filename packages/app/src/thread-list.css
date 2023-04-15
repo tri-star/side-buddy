@@ -1,1 +1,8 @@
 @import './common.css';
+
+:root {
+  --app-list-hoverBackground: var(
+    --vscode-list-hoverBackground,
+    rgba(200, 200, 255, 0.8)
+  );
+}

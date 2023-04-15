@@ -29,9 +29,14 @@ export function ThreadList(): ReactElement {
     display: 'flex',
     cursor: 'pointer',
     justifyContent: 'start',
-    marginTop: '5px',
+    alignItems: 'center',
+    padding: '5px 2px',
     gap: '5px,',
     width: '100%',
+    color: 'var(--app-editor-foreground)',
+    '& > svg': {
+      marginLeft: '5px',
+    },
     '& > p': {
       flexGrow: 1,
       overflow: 'hidden',
@@ -39,6 +44,14 @@ export function ThreadList(): ReactElement {
       whiteSpace: 'nowrap',
       marginLeft: '5px',
       width: '100%',
+    },
+    '&:hover': {
+      color: 'var(--app-editor-foreground)',
+      backgroundColor: 'var(--app-list-hoverBackground)',
+      transition: '0.3s all ease',
+    },
+    '&:focus': {
+      'outline': '1ps dashed var(--app-editor-focus-outline)'
     }
   })
 
@@ -46,10 +59,10 @@ export function ThreadList(): ReactElement {
     <div>
     {(threads.map(thread => {
       return (
-        <div key={thread.id} css={lineStyle}>
+        <a key={thread.id} css={lineStyle} href="void" tabIndex={0}>
           <FontAwesomeIcon icon={faBook} />
           <p title={thread.title}>{thread.title}</p>
-        </div>
+        </a>
       )
     }))}
     </div>
