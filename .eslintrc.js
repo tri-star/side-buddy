@@ -47,6 +47,7 @@ module.exports = {
       'error',
       {
         checksVoidReturn: {
+          arguments: false,
           attributes: false,
         },
       },

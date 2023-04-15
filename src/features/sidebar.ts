@@ -9,6 +9,15 @@ import {
   type ConfigStorageInterface,
 } from '@/api/vs-code/config-storage'
 import { type AppConfig } from '@/domain/app-config'
+import {
+  type ThreadRepositoryInterface,
+  ThreadRepository,
+} from '@/api/vs-code/thread-repository'
+import { type Thread } from '@/domain/thread'
+import {
+  type GlobalStateKey,
+  type GlobalStateManager,
+} from '@/api/vs-code/global-state-manager'
 
 type ViteManifest = {
   'index.html': {
@@ -17,11 +26,14 @@ type ViteManifest = {
   }
 }
 
-export function registerSideBarPanel(context: vscode.ExtensionContext) {
+export function registerSideBarPanel(
+  context: vscode.ExtensionContext,
+  globalStateManager: GlobalStateManager
+) {
   context.subscriptions.push(
     vscode.window.registerWebviewViewProvider(
       'side-buddy.sidebar',
-      new SidebarProvider(context)
+      new SidebarProvider(context, globalStateManager)
     )
   )
 }
@@ -29,6 +41,7 @@ export function registerSideBarPanel(context: vscode.ExtensionContext) {
 class SidebarProvider implements vscode.WebviewViewProvider {
   private _config: AppConfig | undefined
   private readonly _configStorage: ConfigStorageInterface
+  private readonly _threadRepository: ThreadRepositoryInterface
   private _view?: vscode.WebviewView
   private readonly _extensionUri: vscode.Uri
   private readonly _extensionPath: string
@@ -36,13 +49,19 @@ class SidebarProvider implements vscode.WebviewViewProvider {
 
   constructor(
     context: vscode.ExtensionContext,
-    configStorage: ConfigStorageInterface = new ConfigStorage(context)
+    private readonly globalStateManager: GlobalStateManager,
+    configStorage: ConfigStorageInterface = new ConfigStorage(context),
+    threadRepository: ThreadRepositoryInterface = new ThreadRepository(
+      globalStateManager
+    )
   ) {
     this._config = undefined
     this._configStorage = configStorage
+    this._threadRepository = threadRepository
     this._extensionUri = context.extensionUri
     this._extensionPath = context.extensionPath
     this._logger = new VsCodeLogger()
+    this.globalStateManager.subscribe(this.onGlobalStateUpdate.bind(this))
   }
 
   /**
@@ -61,8 +80,23 @@ class SidebarProvider implements vscode.WebviewViewProvider {
       case 'set-api-key':
         void this.handleSetApiKeyStored(parsedMessage.apiKey)
         break
+      case 'save-thread':
+        void this.handleThreadSaved(parsedMessage.thread)
+        break
       case 'log':
         this._logger.log(parsedMessage.level, parsedMessage.message)
+    }
+  }
+
+  /**
+   * globalStateが更新された時の処理
+   * @param key
+   * @param value
+   */
+  private onGlobalStateUpdate(key: GlobalStateKey, value: unknown) {
+    switch (key) {
+      case 'side-buddy.thread-list':
+        break
     }
   }
 
@@ -70,8 +104,17 @@ class SidebarProvider implements vscode.WebviewViewProvider {
    * WebView(React側)のロードが完了した時の処理
    */
   private async handleWebViewLoaded() {
+    if (this._view == null) {
+      throw new Error('_viewがセットされていません')
+    }
     this._config = await this._configStorage.load()
     await this.notifyConfigUpdated()
+    const threads = await this._threadRepository.fetchList()
+    await sendMessage(this._view.webview, {
+      type: 'update-thread-list',
+      source: 'side-buddy-extension',
+      threads,
+    })
   }
 
   /**
@@ -101,6 +144,23 @@ class SidebarProvider implements vscode.WebviewViewProvider {
       type: 'updateConfig',
       source: 'side-buddy-extension',
       config: this._config,
+    })
+  }
+
+  /**
+   * スレッドが保存された
+   * @param apiKey
+   */
+  private async handleThreadSaved(thread: Thread) {
+    if (this._view == null) {
+      throw new Error('_viewがセットされていません')
+    }
+    await this._threadRepository.save(thread)
+    const threads = await this._threadRepository.fetchList()
+    await sendMessage(this._view.webview, {
+      type: 'update-thread-list',
+      source: 'side-buddy-extension',
+      threads,
     })
   }
 

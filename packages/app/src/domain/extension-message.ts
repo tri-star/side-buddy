@@ -1,5 +1,6 @@
 import zod from 'zod'
 import { appConfigSchema } from '@/domain/app-config'
+import { threadSchema } from './thread'
 
 /**
  * postMessageで通知されるイベントの型
@@ -25,8 +26,15 @@ const updateConfigSchema = zod.object({
   config: appConfigSchema,
 })
 
-// typeが複数になった時にdiscriminateUnionに変更する
-// (unionはパターンが1種類の場合エラーになってしまう)
-export const extensionMessageSchema = updateConfigSchema
+const updateThreadList = zod.object({
+  type: zod.literal('update-thread-list'),
+  source: zod.literal('side-buddy-extension'),
+  threads: zod.array(threadSchema),
+})
+
+export const extensionMessageSchema = zod.discriminatedUnion('type', [
+  updateConfigSchema,
+  updateThreadList,
+])
 
 export type ExtensionMessage = zod.infer<typeof extensionMessageSchema>

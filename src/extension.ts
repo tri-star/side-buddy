@@ -3,6 +3,7 @@
 import * as vscode from 'vscode'
 import { registerSideBarPanel } from './features/sidebar'
 import { registerThreadListPanel } from './features/thread-list'
+import { GlobalStateManager } from './api/vs-code/global-state-manager'
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -19,10 +20,13 @@ export function activate(context: vscode.ExtensionContext) {
     }
   )
 
-  registerSideBarPanel(context)
-  registerThreadListPanel(context)
+  const globalStateManager = new GlobalStateManager(context)
+
+  registerSideBarPanel(context, globalStateManager)
+  registerThreadListPanel(context, globalStateManager)
 
   context.subscriptions.push(disposable)
+  context.subscriptions.push(globalStateManager)
 }
 
 // This method is called when your extension is deactivated

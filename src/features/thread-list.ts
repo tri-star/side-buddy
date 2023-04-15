@@ -2,11 +2,23 @@ import * as path from 'path'
 import * as fs from 'fs'
 import * as vscode from 'vscode'
 import { VsCodeLogger } from '@/logging/logger'
+import zod from 'zod'
 import {
   ConfigStorage,
   type ConfigStorageInterface,
 } from '@/api/vs-code/config-storage'
 import { type AppConfig } from '@/domain/app-config'
+import {
+  type GlobalStateManager,
+  type GlobalStateKey,
+} from '@/api/vs-code/global-state-manager'
+import { sendMessage } from '@/api/vs-code/send-message'
+import { threadSchema } from '@/domain/thread'
+import {
+  ThreadRepository,
+  type ThreadRepositoryInterface,
+} from '@/api/vs-code/thread-repository'
+import { panelMessageSchema } from '@/domain/panel-message'
 
 type ViteManifest = {
   'thread-list.html': {
@@ -15,11 +27,14 @@ type ViteManifest = {
   }
 }
 
-export function registerThreadListPanel(context: vscode.ExtensionContext) {
+export function registerThreadListPanel(
+  context: vscode.ExtensionContext,
+  globalStateManager: GlobalStateManager
+) {
   context.subscriptions.push(
     vscode.window.registerWebviewViewProvider(
       'side-buddy.thread-list',
-      new ThreadListProvider(context)
+      new ThreadListProvider(context, globalStateManager)
     )
   )
 }
@@ -34,13 +49,19 @@ class ThreadListProvider implements vscode.WebviewViewProvider {
 
   constructor(
     context: vscode.ExtensionContext,
-    configStorage: ConfigStorageInterface = new ConfigStorage(context)
+    private readonly _globalStateManager: GlobalStateManager,
+    configStorage: ConfigStorageInterface = new ConfigStorage(context),
+    private readonly _threadRepository: ThreadRepositoryInterface = new ThreadRepository(
+      _globalStateManager
+    )
   ) {
     this._config = undefined
     this._configStorage = configStorage
     this._extensionUri = context.extensionUri
     this._extensionPath = context.extensionPath
     this._logger = new VsCodeLogger()
+
+    this._globalStateManager.subscribe(this.onGlobalStateUpdate.bind(this))
   }
 
   /**
@@ -48,12 +69,47 @@ class ThreadListProvider implements vscode.WebviewViewProvider {
    * @param message: JSON形式のメッセージ
    */
   private onDidReceiveMessage(message: unknown) {
+    const parsedMessage = panelMessageSchema.parse(message)
+    switch (parsedMessage.type) {
+      case 'loaded':
+        void this.handleOnLoad()
+        break
+    }
+  }
+
+  private async handleOnLoad() {
     if (this._view == null) {
       throw new Error('_viewがセットされていません')
     }
-    // const parsedMessage = panelMessageSchema.parse(message)
-    // switch (parsedMessage.type) {
-    // }
+    const threads = await this._threadRepository.fetchList()
+    await sendMessage(this._view?.webview, {
+      type: 'update-thread-list',
+      source: 'side-buddy-extension',
+      threads,
+    })
+  }
+
+  /**
+   * globalStateが更新された時の処理
+   * @param key
+   * @param value
+   */
+  private async onGlobalStateUpdate(key: GlobalStateKey, value: unknown) {
+    if (this._view == null) {
+      throw new Error('_viewがセットされていません')
+    }
+    let threads = []
+    switch (key) {
+      case 'side-buddy.thread-list':
+        threads = zod.array(threadSchema).parse(value)
+
+        await sendMessage(this._view?.webview, {
+          type: 'update-thread-list',
+          source: 'side-buddy-extension',
+          threads,
+        })
+        break
+    }
   }
 
   /**

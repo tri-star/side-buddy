@@ -1,4 +1,5 @@
 import zod from 'zod'
+import { threadSchema } from './thread'
 
 const loadedSchema = zod.object({
   type: zod.literal('loaded'),
@@ -23,10 +24,17 @@ const setApiKeySchema = zod.object({
   apiKey: zod.string().min(1),
 })
 
+const saveThreadListSchema = zod.object({
+  type: zod.literal('save-thread'),
+  source: zod.literal('side-buddy-panel'),
+  thread: threadSchema,
+})
+
 export const panelMessageSchema = zod.discriminatedUnion('type', [
   loadedSchema,
   logMessageSchema,
   setApiKeySchema,
+  saveThreadListSchema,
 ])
 
 export type PanelMessage = zod.infer<typeof panelMessageSchema>

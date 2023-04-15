@@ -1,5 +1,6 @@
 import zod from 'zod'
 import { appConfigSchema } from './app-config'
+import { threadSchema } from './thread'
 
 const updateConfigSchema = zod.object({
   type: zod.literal('updateConfig'),
@@ -7,8 +8,15 @@ const updateConfigSchema = zod.object({
   config: appConfigSchema,
 })
 
-// typeが複数になった時にunionに変更する
-// (unionはパターンが1種類の場合エラーになってしまう)
-export const extensionMessageSchema = updateConfigSchema
+const updateThreadList = zod.object({
+  type: zod.literal('update-thread-list'),
+  source: zod.literal('side-buddy-extension'),
+  threads: zod.array(threadSchema),
+})
+
+export const extensionMessageSchema = zod.discriminatedUnion('type', [
+  updateConfigSchema,
+  updateThreadList,
+])
 
 export type ExtensionMessage = zod.infer<typeof extensionMessageSchema>
