@@ -32,6 +32,7 @@ export function ApiKeyForm() {
   const submit = () => {
     vsCodeApi.postMessage<PanelMessage>({
       type: 'set-api-key',
+      source: 'side-buddy-panel',
       apiKey
     })
   }

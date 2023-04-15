@@ -91,7 +91,7 @@ export function useSidebar(
    */
   const init = useCallback(() => {
     listenExtensionMessage(handleExtensionMessage)
-    sendPanelMessage({ type: 'loaded' })
+    sendPanelMessage({ type: 'loaded', source: 'side-buddy-panel' })
     const state = vsCodeApi.getState<AppState>()
     if (state != null) {
       updateState(state)
@@ -252,9 +252,9 @@ export function useSidebar(
    * スレッドのクリア
    */
   const handleClearThread = useCallback(() => {
-    if (!confirm('スレッドをクリアしますか？')) {
-      return
-    }
+    // if (!confirm('スレッドをクリアしますか？')) {
+    //   return
+    // }
     updateState({
       thread: createNewThread(),
     })

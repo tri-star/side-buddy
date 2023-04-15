@@ -1,12 +1,13 @@
 import zod from 'zod'
-import { chatMessageSchema } from './chat'
 
 const loadedSchema = zod.object({
   type: zod.literal('loaded'),
+  source: zod.literal('side-buddy-panel'),
 })
 
 const logMessageSchema = zod.object({
   type: zod.literal('log'),
+  source: zod.literal('side-buddy-panel'),
   level: zod.union([
     zod.literal('debug'),
     zod.literal('info'),
@@ -18,12 +19,8 @@ const logMessageSchema = zod.object({
 
 const setApiKeySchema = zod.object({
   type: zod.literal('set-api-key'),
+  source: zod.literal('side-buddy-panel'),
   apiKey: zod.string().min(1),
-})
-
-const addThreadMessageSchema = zod.object({
-  type: zod.literal('add-thread-message'),
-  message: chatMessageSchema,
 })
 
 // typeが複数になった時にdiscriminateUnionに変更する
@@ -32,7 +29,6 @@ export const panelMessageSchema = zod.discriminatedUnion('type', [
   loadedSchema,
   logMessageSchema,
   setApiKeySchema,
-  addThreadMessageSchema,
 ])
 
 export type PanelMessage = zod.infer<typeof panelMessageSchema>

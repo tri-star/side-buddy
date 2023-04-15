@@ -1,6 +1,6 @@
 // ------------------------------------------------------------
 
-import { panelMessageSchema } from '@/domain/panel-message'
+import { type PanelMessage, panelMessageSchema } from '@/domain/panel-message'
 
 // VSCodeのWebViewが提供するacquireVsCodeApi() に関する定義
 export type VsCodeApi = {
@@ -35,8 +35,9 @@ function acquireVsCodeApiStub(): VsCodeApi {
           // 今は、extension-stub.ts内のmessageリスナがこれを処理する
           window.postMessage({
             type: 'set-api-key',
+            source: 'side-buddy-panel',
             apiKey: parsedMessage.apiKey,
-          })
+          } satisfies PanelMessage)
           break
       }
     },
