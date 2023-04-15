@@ -16,10 +16,12 @@ export function IconButton(props: IconButtonProps) {
     color: 'var(--app-button-foreground)',
     backgroundColor: 'var(--app-button-background)',
     border: '1px solid var(--app-button-border)',
+    cursor: 'pointer',
     '&:hover': {
       backgroundColor: 'var(--app-button-hoverBackground)',
     },
     '&:disabled': {
+      cursor: 'initial',
       color: 'var(--app-button-disabledForeground)',
       backgroundColor: 'var(--app-button-disabledBackground)',
     },
