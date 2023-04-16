@@ -152,7 +152,16 @@ function Sidebar () {
     <div css={containerStyle}>
       <div css={headerStyle}>
         <input
-          css={{ width: '100%', padding: '5px' }}
+          css={{
+            width: '100%',
+            padding: '5px',
+            background: 'var(--app-input-background)',
+            border: '1px solid var(--app-editor-border)',
+            color: 'var(--app-editor-foreground)',
+            '&:focus': {
+              outline: '1px solid var(--app-editor-focus-outline)',
+            }
+          }}
           placeholder="タイトル(省略した場合は自動入力されます)"
           value={state.thread.title}
           onChange={e => { handleThreadTitleChange(e.target.value); }}
