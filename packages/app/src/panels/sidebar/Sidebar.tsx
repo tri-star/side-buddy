@@ -1,12 +1,12 @@
 import { css } from "@emotion/react"
-import { useEffect, useRef } from "react"
+import { useEffect } from "react"
 import { useSidebar } from "./use-sidebar"
 import { type ChatRole } from "@/domain/chat"
-import { useAutoScroll } from "./use-auto-scroll"
 import { Spinner } from "@/components/Spinner"
 import { ApiKeyForm } from "./ApiKeyForm"
 import { faSave, faTrashCan } from '@fortawesome/free-regular-svg-icons'
 import { IconButton } from "@/components/IconButton"
+import { MessageList } from "./MessageList"
 
 function Sidebar () {
 
@@ -25,10 +25,6 @@ function Sidebar () {
     state,
   } = useSidebar()
 
-  const conversationAreaRef = useRef<HTMLDivElement>(null)
-  const completionAreaRef = useRef<HTMLDivElement>(null)
-  useAutoScroll(conversationAreaRef, completionAreaRef)
-
   useEffect(() => {
      init()
   }, [init])
@@ -41,13 +37,6 @@ function Sidebar () {
 
   const headerStyle = css({
     display: 'flex',
-  })
-
-  const conversationAreaStyle = css({
-    flex: 1,
-    height: '100%',
-    maxHeight: '100vh - 300px',
-    overflow: 'auto',
   })
 
   const questionInputAreaStyle = css({
@@ -105,33 +94,6 @@ function Sidebar () {
 
   })
 
-  const threadMessageStyle = {
-    system: css({
-      backgroundColor: '#ccc',
-      padding: '10px',
-      borderRadius: '5px',
-      whiteSpace: 'pre-wrap',
-    }),
-    assistant: css({
-      backgroundColor: 'var(--app-message-assistant-background)',
-      padding: '10px',
-      borderRadius: '5px',
-      marginTop: '20px',
-      marginRight: '20px',
-      marginLeft: '5px',
-      whiteSpace: 'pre-wrap',
-    }),
-    user: css({
-      backgroundColor: 'var(--app-message-user-background)',
-      padding: '10px',
-      borderRadius: '5px',
-      marginTop: '20px',
-      marginLeft: '20px',
-      marginRight: '5px',
-      whiteSpace: 'pre-wrap',
-    })
-  }
-
   if(state.config === undefined) {
     return (
       <div css={{
@@ -169,22 +131,7 @@ function Sidebar () {
         <IconButton icon={faSave} onClick={handleSaveThread}/>
         <IconButton icon={faTrashCan} onClick={handleClearThread}/>
       </div>
-      <div css={conversationAreaStyle} ref={conversationAreaRef}>
-
-        {state.thread.messages.map(message => {
-          return (
-            <div key={message.id} css={threadMessageStyle[message.role]}>
-              <p>{message.message}</p>
-            </div>
-          )
-        })
-        }
-
-        <div css={threadMessageStyle.assistant} ref={completionAreaRef} hidden={(completion === '')}>
-          {completion}
-        </div>
-
-      </div>
+      <MessageList completion={completion}/>
       <div css={questionInputAreaStyle}>
         <div css={formRowStyle}>
           <p css={formLabelStyle}>Role</p>
