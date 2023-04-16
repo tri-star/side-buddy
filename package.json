@@ -1,7 +1,12 @@
 {
   "name": "side-buddy",
+  "publisher": "tristar",
   "displayName": "side-buddy",
   "description": "Your friend living in the sidebar, powered by OpenAI API. You can specify the role and temperature, and refer to conversation history.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tri-star/side-buddy"
+  },
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.77.0"
@@ -9,6 +14,7 @@
   "categories": [
     "Other"
   ],
+  "icon": "assets/ext-icon.png",
   "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {
