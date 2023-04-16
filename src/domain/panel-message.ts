@@ -30,6 +30,12 @@ const saveThreadListSchema = zod.object({
   thread: threadSchema,
 })
 
+const loadThreadSchema = zod.object({
+  type: zod.literal('load-thread'),
+  source: zod.literal('side-buddy-panel'),
+  threadId: zod.string(),
+})
+
 // typeが複数になった時にdiscriminateUnionに変更する
 // (unionはパターンが1種類の場合エラーになってしまう)
 export const panelMessageSchema = zod.discriminatedUnion('type', [
@@ -37,6 +43,7 @@ export const panelMessageSchema = zod.discriminatedUnion('type', [
   logMessageSchema,
   setApiKeySchema,
   saveThreadListSchema,
+  loadThreadSchema,
 ])
 
 export type PanelMessage = zod.infer<typeof panelMessageSchema>

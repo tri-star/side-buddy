@@ -25,6 +25,14 @@ export function ThreadList(): ReactElement {
     })
   }, [])
 
+  const handleClick = (threadId: string) => {
+    sendPanelMessage({
+      type: "load-thread",
+      source: "side-buddy-panel",
+      threadId
+    })
+  }
+
   const lineStyle = css({
     display: 'flex',
     cursor: 'pointer',
@@ -59,7 +67,7 @@ export function ThreadList(): ReactElement {
     <div>
     {(threads.map(thread => {
       return (
-        <a key={thread.id} css={lineStyle} href="void" tabIndex={0}>
+        <a key={thread.id} css={lineStyle} href="void" tabIndex={0} onClick={() => { handleClick(thread.id); }}>
           <FontAwesomeIcon icon={faBook} />
           <p title={thread.title}>{thread.title}</p>
         </a>

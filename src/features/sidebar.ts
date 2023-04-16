@@ -89,18 +89,6 @@ class SidebarProvider implements vscode.WebviewViewProvider {
   }
 
   /**
-   * globalStateが更新された時の処理
-   * @param key
-   * @param value
-   */
-  private onGlobalStateUpdate(key: GlobalStateKey, value: unknown) {
-    switch (key) {
-      case 'side-buddy.thread-list':
-        break
-    }
-  }
-
-  /**
    * WebView(React側)のロードが完了した時の処理
    */
   private async handleWebViewLoaded() {
@@ -161,6 +149,35 @@ class SidebarProvider implements vscode.WebviewViewProvider {
       type: 'update-thread-list',
       source: 'side-buddy-extension',
       threads,
+    })
+  }
+
+  /**
+   * globalStateが更新された時の処理
+   * @param key
+   * @param value
+   */
+  private onGlobalStateUpdate(key: GlobalStateKey, value: unknown) {
+    switch (key) {
+      case 'side-buddy.load-thread':
+        void this.handleLoadThread(value as string)
+        break
+    }
+  }
+
+  private async handleLoadThread(threadId: string) {
+    if (this._view == null) {
+      throw new Error('_viewがセットされていません')
+    }
+    const thread = await this._threadRepository.find(threadId)
+    if (thread == null) {
+      throw new Error(`スレッドが見つかりませんでした: ${threadId}`)
+    }
+
+    await sendMessage(this._view?.webview, {
+      type: 'load-thread',
+      source: 'side-buddy-extension',
+      thread,
     })
   }
 

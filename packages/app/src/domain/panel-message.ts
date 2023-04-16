@@ -30,11 +30,18 @@ const saveThreadListSchema = zod.object({
   thread: threadSchema,
 })
 
+const loadThreadSchema = zod.object({
+  type: zod.literal('load-thread'),
+  source: zod.literal('side-buddy-panel'),
+  threadId: zod.string(),
+})
+
 export const panelMessageSchema = zod.discriminatedUnion('type', [
   loadedSchema,
   logMessageSchema,
   setApiKeySchema,
   saveThreadListSchema,
+  loadThreadSchema,
 ])
 
 export type PanelMessage = zod.infer<typeof panelMessageSchema>

@@ -74,6 +74,9 @@ class ThreadListProvider implements vscode.WebviewViewProvider {
       case 'loaded':
         void this.handleOnLoad()
         break
+      case 'load-thread':
+        void this.loadThread(parsedMessage.threadId)
+        break
     }
   }
 
@@ -87,6 +90,10 @@ class ThreadListProvider implements vscode.WebviewViewProvider {
       source: 'side-buddy-extension',
       threads,
     })
+  }
+
+  private async loadThread(threadId: string) {
+    await this._globalStateManager.loadThread(threadId)
   }
 
   /**

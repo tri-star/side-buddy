@@ -4,6 +4,7 @@ import { type GlobalStateManager } from './global-state-manager'
 export interface ThreadRepositoryInterface {
   save: (thread: Thread) => Promise<void>
   fetchList: () => Promise<Thread[]>
+  find: (threadId: string) => Promise<Thread | undefined>
 }
 
 export class ThreadRepository implements ThreadRepositoryInterface {
@@ -33,5 +34,10 @@ export class ThreadRepository implements ThreadRepositoryInterface {
     return await new Promise((resolve) => {
       resolve(threads)
     })
+  }
+
+  async find(threadId: string): Promise<Thread | undefined> {
+    const threads = await this.fetchList()
+    return threads.find((t) => t.id === threadId)
   }
 }

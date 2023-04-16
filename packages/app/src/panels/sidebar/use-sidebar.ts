@@ -81,6 +81,12 @@ export function useSidebar(
           updateState({
             config: message.config,
           })
+          break
+        case 'load-thread':
+          updateState({
+            thread: message.thread,
+          })
+          break
       }
     },
     [updateState]

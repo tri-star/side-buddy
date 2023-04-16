@@ -2,7 +2,7 @@ import zod from 'zod'
 import { threadSchema, type Thread } from '@/domain/thread'
 import type * as vscode from 'vscode'
 
-export type GlobalStateKey = 'side-buddy.thread-list'
+export type GlobalStateKey = 'side-buddy.thread-list' | 'side-buddy.load-thread'
 
 export type GlobalStateUpdateCallback = (
   key: GlobalStateKey,
@@ -30,6 +30,10 @@ export class GlobalStateManager {
   getThreadList(): Thread[] {
     const result = this._context.globalState.get('side-buddy.thread-list') ?? []
     return zod.array(threadSchema).parse(result)
+  }
+
+  async loadThread(threadId: string) {
+    await this._update('side-buddy.load-thread', threadId)
   }
 
   private async _update(key: GlobalStateKey, value: unknown) {
