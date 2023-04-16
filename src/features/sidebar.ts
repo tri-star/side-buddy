@@ -14,10 +14,7 @@ import {
   ThreadRepository,
 } from '@/api/vs-code/thread-repository'
 import { type Thread } from '@/domain/thread'
-import {
-  type GlobalStateKey,
-  type GlobalStateManager,
-} from '@/api/vs-code/global-state-manager'
+import { type ExtensionEventEmitter } from '@/api/extension-event-emitter'
 
 type ViteManifest = {
   'index.html': {
@@ -28,12 +25,12 @@ type ViteManifest = {
 
 export function registerSideBarPanel(
   context: vscode.ExtensionContext,
-  globalStateManager: GlobalStateManager
+  extensionEventEmitter: ExtensionEventEmitter
 ) {
   context.subscriptions.push(
     vscode.window.registerWebviewViewProvider(
       'side-buddy.sidebar',
-      new SidebarProvider(context, globalStateManager)
+      new SidebarProvider(context, extensionEventEmitter)
     )
   )
 }
@@ -49,11 +46,9 @@ class SidebarProvider implements vscode.WebviewViewProvider {
 
   constructor(
     context: vscode.ExtensionContext,
-    private readonly globalStateManager: GlobalStateManager,
+    private readonly extensionEventEmitter: ExtensionEventEmitter,
     configStorage: ConfigStorageInterface = new ConfigStorage(context),
-    threadRepository: ThreadRepositoryInterface = new ThreadRepository(
-      globalStateManager
-    )
+    threadRepository: ThreadRepositoryInterface = new ThreadRepository(context)
   ) {
     this._config = undefined
     this._configStorage = configStorage
@@ -61,7 +56,11 @@ class SidebarProvider implements vscode.WebviewViewProvider {
     this._extensionUri = context.extensionUri
     this._extensionPath = context.extensionPath
     this._logger = new VsCodeLogger()
-    this.globalStateManager.subscribe(this.onGlobalStateUpdate.bind(this))
+
+    this.extensionEventEmitter.on<string>(
+      'load-thread',
+      this.handleLoadThread.bind(this)
+    )
   }
 
   /**
@@ -150,19 +149,6 @@ class SidebarProvider implements vscode.WebviewViewProvider {
       source: 'side-buddy-extension',
       threads,
     })
-  }
-
-  /**
-   * globalStateが更新された時の処理
-   * @param key
-   * @param value
-   */
-  private onGlobalStateUpdate(key: GlobalStateKey, value: unknown) {
-    switch (key) {
-      case 'side-buddy.load-thread':
-        void this.handleLoadThread(value as string)
-        break
-    }
   }
 
   private async handleLoadThread(threadId: string) {

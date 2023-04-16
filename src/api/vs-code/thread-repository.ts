@@ -1,5 +1,6 @@
-import { type Thread } from '@/domain/thread'
-import { type GlobalStateManager } from './global-state-manager'
+import type * as vscode from 'vscode'
+import zod from 'zod'
+import { threadSchema, type Thread } from '@/domain/thread'
 
 export interface ThreadRepositoryInterface {
   save: (thread: Thread) => Promise<void>
@@ -8,10 +9,10 @@ export interface ThreadRepositoryInterface {
 }
 
 export class ThreadRepository implements ThreadRepositoryInterface {
-  constructor(private readonly _globalStateManager: GlobalStateManager) {}
+  constructor(private readonly _context: vscode.ExtensionContext) {}
 
   async save(thread: Thread) {
-    const threads = this._globalStateManager.getThreadList()
+    const threads = await this.fetchList()
 
     let found = false
     threads.forEach((t) => {
@@ -25,11 +26,16 @@ export class ThreadRepository implements ThreadRepositoryInterface {
     if (!found) {
       threads.push(thread)
     }
-    await this._globalStateManager.updateThreadList(threads)
+    await this._context.globalState.update('side-buddy.thread-list', threads)
   }
 
   async fetchList(): Promise<Thread[]> {
-    const threads = this._globalStateManager.getThreadList()
+    const result = this._context.globalState.get('side-buddy.thread-list') ?? []
+    const threads = zod.array(threadSchema).parse(result)
+
+    if (threads == null) {
+      throw new Error('スレッド一覧のパースに失敗しました')
+    }
 
     return await new Promise((resolve) => {
       resolve(threads)
