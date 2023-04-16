@@ -3,14 +3,11 @@ import { useAutoScroll } from "./use-auto-scroll"
 import { useRef } from "react"
 import { useSidebar } from "./use-sidebar"
 
-type Props = {
-  completion: string
-}
-
-export function MessageList(props: Props) {
+export function MessageList() {
 
   const {
     state,
+    completion,
   } = useSidebar()
 
   const conversationAreaRef = useRef<HTMLDivElement>(null)
@@ -60,10 +57,10 @@ export function MessageList(props: Props) {
       )
     })
     }
-    <div css={threadMessageStyle.assistant} ref={completionAreaRef} hidden={(props.completion === '')}>
-      {props.completion}
+    <div css={threadMessageStyle.assistant} ref={completionAreaRef} hidden={(completion === '')}>
+      {completion}
     </div>
 
   </div>
-)
+  )
 }

@@ -8,6 +8,8 @@ type UpdateStateCallback = (prevState: AppState) => Partial<AppState>
 type SidebarStateContextType = {
   state: AppState,
   setState: Dispatch<SetStateAction<AppState>>,
+  completion: string,
+  setCompletion: Dispatch<SetStateAction<string>>,
   updateState: (newState: Partial<AppState>|UpdateStateCallback) => void,
 }
 
@@ -19,6 +21,8 @@ export const SidebarStateContext = createContext<SidebarStateContextType>({
     thread: createNewThread(),
   },
   setState:  () => {},
+  completion: '',
+  setCompletion:  () => {},
   updateState: () => {},
 })
 
@@ -30,6 +34,8 @@ export const SidebarStateProvider = ({ children }: PropsWithChildren) => {
     message: '',
     thread: createNewThread(),
   })
+
+  const [completion, setCompletion] = useState('')
 
   /**
    * ReactのuseStateとVSCodeのstateの両方を更新する
@@ -70,8 +76,8 @@ export const SidebarStateProvider = ({ children }: PropsWithChildren) => {
   return (
     <SidebarStateContext.Provider
       value={{
-        state,
-        setState,
+        state, setState,
+        completion, setCompletion,
         updateState,
       }}
     >{children}</SidebarStateContext.Provider>

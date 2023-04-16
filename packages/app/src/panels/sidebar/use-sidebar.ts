@@ -1,4 +1,4 @@
-import { type KeyboardEvent, useCallback, useState, useContext } from 'react'
+import { type KeyboardEvent, useCallback, useContext } from 'react'
 import { listenExtensionMessage } from '@/api/vs-code/listen-extension-message'
 import { sendPanelMessage } from '@/api/vs-code/send-panel-message'
 import { type ExtensionMessage } from '@/domain/extension-message'
@@ -20,9 +20,9 @@ import { SidebarStateContext } from './SidebarStateProvider'
 export function useSidebar(
   threadRepositoryFactory: ThreadRepositoryFactory = defaultThreadRepositoryFactory
 ) {
-  const { state, updateState } = useContext(SidebarStateContext)
+  const { state, updateState, completion, setCompletion } =
+    useContext(SidebarStateContext)
 
-  const [completion, setCompletion] = useState<string>('')
   const threadRepository = threadRepositoryFactory()
 
   /**
@@ -203,7 +203,7 @@ export function useSidebar(
       message: completionResult,
     })
     setCompletion('')
-  }, [state, updateState, addThreadMessage, generateTitle])
+  }, [state, setCompletion, updateState, addThreadMessage, generateTitle])
 
   /**
    * テキストエリア内のキー押下時の処理。(Ctrl+Enterでの送信の処理)
