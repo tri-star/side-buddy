@@ -31,7 +31,7 @@ function Sidebar () {
 
   useEffect(() => {
      init()
-  }, [])
+  }, [init])
 
   const containerStyle = css({
     display: 'flex',

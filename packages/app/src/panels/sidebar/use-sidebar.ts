@@ -28,16 +28,19 @@ export function useSidebar(
   /**
    * スレッドにメッセージを追加し、useStateとVSCodeのStateを更新する
    */
-  const addThreadMessage = useCallback((message: ChatMessage) => {
-    updateState((prev: AppState) => {
-      return {
-        thread: {
-          ...prev.thread,
-          messages: [...prev.thread.messages, message],
-        },
-      }
-    })
-  }, [])
+  const addThreadMessage = useCallback(
+    (message: ChatMessage) => {
+      updateState((prev: AppState) => {
+        return {
+          thread: {
+            ...prev.thread,
+            messages: [...prev.thread.messages, message],
+          },
+        }
+      })
+    },
+    [updateState]
+  )
 
   /**
    * 拡張機能からのメッセージを受け取り処理する
