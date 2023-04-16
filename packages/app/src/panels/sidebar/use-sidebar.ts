@@ -1,4 +1,4 @@
-import { type KeyboardEvent, useCallback, useState } from 'react'
+import { type KeyboardEvent, useCallback, useState, useContext } from 'react'
 import { listenExtensionMessage } from '@/api/vs-code/listen-extension-message'
 import { sendPanelMessage } from '@/api/vs-code/send-panel-message'
 import { type ExtensionMessage } from '@/domain/extension-message'
@@ -15,53 +15,22 @@ import { fetchTitleFromMessage } from '@/api/open-ai/utility-api'
 import { type ThreadRepositoryFactory } from '@/api/thread/thread-repository'
 import { defaultThreadRepositoryFactory } from '@/api/thread/thread-repository'
 import { createNewThread } from '@/domain/thread'
+import { SidebarStateContext } from './SidebarStateProvider'
 
 export function useSidebar(
   threadRepositoryFactory: ThreadRepositoryFactory = defaultThreadRepositoryFactory
 ) {
-  const [state, setState] = useState<AppState>({
-    config: undefined,
-    role: 'user',
-    temperature: 0.0,
-    message: '',
-    thread: createNewThread(),
-  })
+  const { state, updateState } = useContext(SidebarStateContext)
 
   const [completion, setCompletion] = useState<string>('')
   const threadRepository = threadRepositoryFactory()
 
   /**
-   * ReactのuseStateとVSCodeのstateの両方を更新する
-   */
-  const updateState = useCallback((newState: Partial<AppState>) => {
-    setState((prev) => {
-      vsCodeApi.setState<AppState>({
-        ...prev,
-        ...newState,
-      })
-
-      return {
-        ...prev,
-        ...newState,
-      }
-    })
-  }, [])
-
-  /**
    * スレッドにメッセージを追加し、useStateとVSCodeのStateを更新する
    */
   const addThreadMessage = useCallback((message: ChatMessage) => {
-    setState((prev) => {
-      vsCodeApi.setState<AppState>({
-        ...prev,
-        thread: {
-          ...prev.thread,
-          messages: [...prev.thread.messages, message],
-        },
-      })
-
+    updateState((prev: AppState) => {
       return {
-        ...prev,
         thread: {
           ...prev.thread,
           messages: [...prev.thread.messages, message],
@@ -125,17 +94,8 @@ export function useSidebar(
    * スレッドのタイトルを更新する
    */
   const handleThreadTitleChange = useCallback((title: string) => {
-    setState((prev) => {
-      vsCodeApi.setState<AppState>({
-        ...prev,
-        thread: {
-          ...prev.thread,
-          title,
-        },
-      })
-
+    updateState((prev: AppState) => {
       return {
-        ...prev,
         thread: {
           ...prev.thread,
           title,
