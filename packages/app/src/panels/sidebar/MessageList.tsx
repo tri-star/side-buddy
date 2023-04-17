@@ -59,6 +59,16 @@ export function MessageList() {
     }, removeIconContainerStyle])
   }
 
+  const completionStyle = css({
+    backgroundColor: 'var(--app-message-assistant-background)',
+    padding: '10px',
+    borderRadius: '5px',
+    marginTop: '20px',
+    marginRight: '20px',
+    marginLeft: '5px',
+    whiteSpace: 'pre-wrap',
+  })
+
   const removeIconStyle = css({
     opacity: 0,
     position: 'absolute',
@@ -81,7 +91,7 @@ export function MessageList() {
       )
     })
     }
-    <div css={threadMessageStyle.assistant} ref={completionAreaRef} hidden={(completion === '')}>
+    <div css={completionStyle} ref={completionAreaRef} hidden={completion === ''}>
       {completion}
     </div>
 
