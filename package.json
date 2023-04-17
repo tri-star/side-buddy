@@ -20,8 +20,8 @@
   "contributes": {
     "commands": [
       {
-        "command": "side-buddy.helloWorld",
-        "title": "Hello World"
+        "command": "side-buddy.reset-api-key",
+        "title": "Side Buddy:Reset API key"
       }
     ],
     "views": {

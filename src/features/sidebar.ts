@@ -61,6 +61,9 @@ class SidebarProvider implements vscode.WebviewViewProvider {
       'load-thread',
       this.handleLoadThread.bind(this)
     )
+    this.extensionEventEmitter.on<string>('reset-api-key', async () => {
+      await this.handleSetApiKeyStored('')
+    })
   }
 
   /**
