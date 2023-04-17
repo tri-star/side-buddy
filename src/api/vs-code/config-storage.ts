@@ -1,5 +1,5 @@
 import { type AppConfig } from '@/domain/app-config'
-import type vscode from 'vscode'
+import * as vscode from 'vscode'
 
 export interface ConfigStorageInterface {
   save: (appConfig: AppConfig) => Promise<void>
@@ -14,9 +14,18 @@ export class ConfigStorage implements ConfigStorageInterface {
   }
 
   public async load(): Promise<AppConfig> {
-    return {
+    const config: AppConfig = {
       apiKey: (await this._context.secrets.get('apiKey')) ?? '',
-      defaultTemperature: 0.0,
+      defaultTemperature: 0.5,
     }
+
+    const proxyConfig = vscode.workspace.getConfiguration('http.proxy')
+    if ((proxyConfig.get('host') ?? '') !== '') {
+      config.proxy = {
+        host: proxyConfig.get('host') ?? '',
+        port: proxyConfig.get('port') ?? '',
+      }
+    }
+    return config
   }
 }
