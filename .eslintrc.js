@@ -53,6 +53,9 @@ module.exports = {
       },
     ],
     '@typescript-eslint/require-await': 'off',
+
+    'jsx-a11y/click-events-have-key-events': 'off', // divタグなどにonClickを付けるがキーを割り当てないことがあるのでoff
+    'jsx-a11y/no-static-element-interactions': 'off', // divタグなどにonClickを付けたいときがあるのでoff
   },
   settings: {
     react: {

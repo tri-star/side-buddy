@@ -2,12 +2,15 @@ import { css } from "@emotion/react"
 import { useAutoScroll } from "./use-auto-scroll"
 import { useRef } from "react"
 import { useSidebar } from "./use-sidebar"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faTimes } from "@fortawesome/free-solid-svg-icons"
 
 export function MessageList() {
 
   const {
     state,
     completion,
+    handleRemoveMessage,
   } = useSidebar()
 
   const conversationAreaRef = useRef<HTMLDivElement>(null)
@@ -21,14 +24,22 @@ export function MessageList() {
     overflow: 'auto',
   })
 
+  const removeIconContainerStyle = {
+    position: 'relative',
+    display: 'block',
+    '&:hover .remove': {
+      opacity: 1,
+    }
+  } as const
+
   const threadMessageStyle = {
-    system: css({
+    system: css([{
       backgroundColor: '#ccc',
       padding: '10px',
       borderRadius: '5px',
       whiteSpace: 'pre-wrap',
-    }),
-    assistant: css({
+    }, removeIconContainerStyle]),
+    assistant: css([{
       backgroundColor: 'var(--app-message-assistant-background)',
       padding: '10px',
       borderRadius: '5px',
@@ -36,8 +47,8 @@ export function MessageList() {
       marginRight: '20px',
       marginLeft: '5px',
       whiteSpace: 'pre-wrap',
-    }),
-    user: css({
+    }, removeIconContainerStyle]),
+    user: css([{
       backgroundColor: 'var(--app-message-user-background)',
       padding: '10px',
       borderRadius: '5px',
@@ -45,13 +56,26 @@ export function MessageList() {
       marginLeft: '20px',
       marginRight: '5px',
       whiteSpace: 'pre-wrap',
-    })
+    }, removeIconContainerStyle])
   }
+
+  const removeIconStyle = css({
+    opacity: 0,
+    position: 'absolute',
+    top: '-13px',
+    right: '-3px',
+    cursor: 'pointer',
+    color: '#f55',
+    transition: 'all 0.3s ease',
+  })
 
   return (<div css={conversationAreaStyle} ref={conversationAreaRef}>
     {state.thread.messages.map(message => {
       return (
         <div key={message.id} css={threadMessageStyle[message.role]}>
+          <div className="remove" css={removeIconStyle} onClick={() => {handleRemoveMessage(message.id)}}>
+            <FontAwesomeIcon icon={faTimes} size="2x" />
+          </div>
           <p>{message.message}</p>
         </div>
       )

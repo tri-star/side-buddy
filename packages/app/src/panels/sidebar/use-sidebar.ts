@@ -217,6 +217,18 @@ export function useSidebar(
     [submit]
   )
 
+  const handleRemoveMessage = (messageId: string) => {
+    const newMessages = state.thread.messages.filter((m) => {
+      return m.id !== messageId
+    })
+    updateState({
+      thread: {
+        ...state.thread,
+        messages: newMessages,
+      },
+    })
+  }
+
   /**
    * スレッドのクリア
    */
@@ -248,6 +260,7 @@ export function useSidebar(
     canSubmit,
     submit,
     handleKeyDown,
+    handleRemoveMessage,
     handleClearThread,
     handleSaveThread,
   }
