@@ -1,17 +1,12 @@
-import { css } from "@emotion/react"
-import { useAutoScroll } from "./use-auto-scroll"
-import { useRef } from "react"
-import { useSidebar } from "./use-sidebar"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faTimes } from "@fortawesome/free-solid-svg-icons"
+import { css } from '@emotion/react'
+import { useAutoScroll } from './use-auto-scroll'
+import { useRef } from 'react'
+import { useSidebar } from './use-sidebar'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTimes } from '@fortawesome/free-solid-svg-icons'
 
 export function MessageList() {
-
-  const {
-    state,
-    completion,
-    handleRemoveMessage,
-  } = useSidebar()
+  const { state, completion, handleRemoveMessage } = useSidebar()
 
   const conversationAreaRef = useRef<HTMLDivElement>(null)
   const completionAreaRef = useRef<HTMLDivElement>(null)
@@ -29,34 +24,43 @@ export function MessageList() {
     display: 'block',
     '&:hover .remove': {
       opacity: 1,
-    }
+    },
   } as const
 
   const threadMessageStyle = {
-    system: css([{
-      backgroundColor: '#ccc',
-      padding: '10px',
-      borderRadius: '5px',
-      whiteSpace: 'pre-wrap',
-    }, removeIconContainerStyle]),
-    assistant: css([{
-      backgroundColor: 'var(--app-message-assistant-background)',
-      padding: '10px',
-      borderRadius: '5px',
-      marginTop: '20px',
-      marginRight: '20px',
-      marginLeft: '5px',
-      whiteSpace: 'pre-wrap',
-    }, removeIconContainerStyle]),
-    user: css([{
-      backgroundColor: 'var(--app-message-user-background)',
-      padding: '10px',
-      borderRadius: '5px',
-      marginTop: '20px',
-      marginLeft: '20px',
-      marginRight: '5px',
-      whiteSpace: 'pre-wrap',
-    }, removeIconContainerStyle])
+    system: css([
+      {
+        backgroundColor: '#ccc',
+        padding: '10px',
+        borderRadius: '5px',
+        whiteSpace: 'pre-wrap',
+      },
+      removeIconContainerStyle,
+    ]),
+    assistant: css([
+      {
+        backgroundColor: 'var(--app-message-assistant-background)',
+        padding: '10px',
+        borderRadius: '5px',
+        marginTop: '20px',
+        marginRight: '20px',
+        marginLeft: '5px',
+        whiteSpace: 'pre-wrap',
+      },
+      removeIconContainerStyle,
+    ]),
+    user: css([
+      {
+        backgroundColor: 'var(--app-message-user-background)',
+        padding: '10px',
+        borderRadius: '5px',
+        marginTop: '20px',
+        marginLeft: '20px',
+        marginRight: '5px',
+        whiteSpace: 'pre-wrap',
+      },
+      removeIconContainerStyle,
+    ]),
   }
 
   const completionStyle = css({
@@ -79,22 +83,31 @@ export function MessageList() {
     transition: 'all 0.3s ease',
   })
 
-  return (<div css={conversationAreaStyle} ref={conversationAreaRef}>
-    {state.thread.messages.map(message => {
-      return (
-        <div key={message.id} css={threadMessageStyle[message.role]}>
-          <div className="remove" css={removeIconStyle} onClick={() => {handleRemoveMessage(message.id)}}>
-            <FontAwesomeIcon icon={faTimes} size="2x" />
+  return (
+    <div css={conversationAreaStyle} ref={conversationAreaRef}>
+      {state.thread.messages.map((message) => {
+        return (
+          <div key={message.id} css={threadMessageStyle[message.role]}>
+            <div
+              className="remove"
+              css={removeIconStyle}
+              onClick={() => {
+                handleRemoveMessage(message.id)
+              }}
+            >
+              <FontAwesomeIcon icon={faTimes} size="2x" />
+            </div>
+            <p>{message.message}</p>
           </div>
-          <p>{message.message}</p>
-        </div>
-      )
-    })
-    }
-    <div css={completionStyle} ref={completionAreaRef} hidden={completion === ''}>
-      {completion}
+        )
+      })}
+      <div
+        css={completionStyle}
+        ref={completionAreaRef}
+        hidden={completion === ''}
+      >
+        {completion}
+      </div>
     </div>
-
-  </div>
   )
 }

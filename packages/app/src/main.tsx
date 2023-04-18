@@ -6,7 +6,7 @@ import { isVsCodeEnv } from './api/vs-code/vs-code-api'
 import { startExtensionStub } from './api/vs-code/extension-stub'
 import { SidebarStateProvider } from './panels/sidebar/SidebarStateProvider'
 
-if(!isVsCodeEnv()) {
+if (!isVsCodeEnv()) {
   void startExtensionStub()
 }
 
@@ -15,5 +15,5 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <SidebarStateProvider>
       <Sidebar />
     </SidebarStateProvider>
-  </React.StrictMode>,
+  </React.StrictMode>
 )

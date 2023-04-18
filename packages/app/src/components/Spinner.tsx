@@ -1,14 +1,13 @@
-import { css, keyframes } from "@emotion/react"
+import { css, keyframes } from '@emotion/react'
 
 export function Spinner(): JSX.Element {
-
   const gridAnimation = keyframes({
     '0%, 100%': {
-      opacity: 1
+      opacity: 1,
     },
     '50%': {
-      opacity: 0.5
-    }
+      opacity: 0.5,
+    },
   })
 
   const style = css({
@@ -71,16 +70,17 @@ export function Spinner(): JSX.Element {
     },
   })
 
-  return (<div css={style}>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
+  return (
+    <div css={style}>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
     </div>
-    )
+  )
 }

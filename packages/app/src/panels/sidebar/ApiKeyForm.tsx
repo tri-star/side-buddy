@@ -1,10 +1,9 @@
-import { vsCodeApi } from "@/api/vs-code/vs-code-api"
-import { type PanelMessage } from "@/domain/panel-message"
-import { css } from "@emotion/react"
-import { useState } from "react"
+import { vsCodeApi } from '@/api/vs-code/vs-code-api'
+import { type PanelMessage } from '@/domain/panel-message'
+import { css } from '@emotion/react'
+import { useState } from 'react'
 
 export function ApiKeyForm() {
-
   const [apiKey, setApiKey] = useState('')
 
   const containerStyle = css({
@@ -22,7 +21,7 @@ export function ApiKeyForm() {
   })
 
   const buttonStyle = css({
-    padding: '5px 20px'
+    padding: '5px 20px',
   })
 
   const canSubmit = () => {
@@ -33,7 +32,7 @@ export function ApiKeyForm() {
     vsCodeApi.postMessage<PanelMessage>({
       type: 'set-api-key',
       source: 'side-buddy-panel',
-      apiKey
+      apiKey,
     })
   }
 
@@ -46,16 +45,15 @@ export function ApiKeyForm() {
           type="password"
           css={inputStyle}
           placeholder="sk-***"
-          onChange={(e) => { setApiKey(e.target.value); }}
+          onChange={(e) => {
+            setApiKey(e.target.value)
+          }}
         />
       </div>
 
       <div>
-        <button
-          css={buttonStyle}
-          disabled={!canSubmit()}
-          onClick={submit}>
-            設定
+        <button css={buttonStyle} disabled={!canSubmit()} onClick={submit}>
+          設定
         </button>
       </div>
     </div>

@@ -1,16 +1,23 @@
 import { vsCodeApi } from '@/api/vs-code/vs-code-api'
 import { type AppState } from '@/domain/app-state'
 import { createNewThread } from '@/domain/thread'
-import { type SetStateAction , type Dispatch , type PropsWithChildren, createContext, useState, useCallback } from 'react'
+import {
+  type SetStateAction,
+  type Dispatch,
+  type PropsWithChildren,
+  createContext,
+  useState,
+  useCallback,
+} from 'react'
 
 type UpdateStateCallback = (prevState: AppState) => Partial<AppState>
 
 type SidebarStateContextType = {
-  state: AppState,
-  setState: Dispatch<SetStateAction<AppState>>,
-  completion: string,
-  setCompletion: Dispatch<SetStateAction<string>>,
-  updateState: (newState: Partial<AppState>|UpdateStateCallback) => void,
+  state: AppState
+  setState: Dispatch<SetStateAction<AppState>>
+  completion: string
+  setCompletion: Dispatch<SetStateAction<string>>
+  updateState: (newState: Partial<AppState> | UpdateStateCallback) => void
 }
 
 export const SidebarStateContext = createContext<SidebarStateContextType>({
@@ -20,14 +27,13 @@ export const SidebarStateContext = createContext<SidebarStateContextType>({
     message: '',
     thread: createNewThread(),
   },
-  setState:  () => {},
+  setState: () => {},
   completion: '',
-  setCompletion:  () => {},
+  setCompletion: () => {},
   updateState: () => {},
 })
 
 export const SidebarStateProvider = ({ children }: PropsWithChildren) => {
-
   const [state, setState] = useState<AppState>({
     role: 'user',
     temperature: 0.0,
@@ -40,46 +46,51 @@ export const SidebarStateProvider = ({ children }: PropsWithChildren) => {
   /**
    * ReactのuseStateとVSCodeのstateの両方を更新する
    */
-  const updateState = useCallback((newState: Partial<AppState>|UpdateStateCallback) => {
+  const updateState = useCallback(
+    (newState: Partial<AppState> | UpdateStateCallback) => {
+      // newStateがコールバック関数の場合
+      if (newState instanceof Function) {
+        setState((prev) => {
+          vsCodeApi.setState<AppState>({
+            ...prev,
+            ...newState,
+          })
 
-    // newStateがコールバック関数の場合
-    if(newState instanceof Function) {
+          const newPartialState = newState(prev)
+          return {
+            ...prev,
+            ...newPartialState,
+          }
+        })
+      }
+
+      // newStateが更新する値を含んだオブジェクトの場合
       setState((prev) => {
         vsCodeApi.setState<AppState>({
           ...prev,
           ...newState,
         })
 
-        const newPartialState = newState(prev)
         return {
           ...prev,
-          ...newPartialState
+          ...newState,
         }
-      });
-    }
-
-    // newStateが更新する値を含んだオブジェクトの場合
-    setState((prev) => {
-      vsCodeApi.setState<AppState>({
-        ...prev,
-        ...newState,
       })
-
-      return {
-        ...prev,
-        ...newState,
-      }
-    })
-  }, [])
-
+    },
+    []
+  )
 
   return (
     <SidebarStateContext.Provider
       value={{
-        state, setState,
-        completion, setCompletion,
+        state,
+        setState,
+        completion,
+        setCompletion,
         updateState,
       }}
-    >{children}</SidebarStateContext.Provider>
+    >
+      {children}
+    </SidebarStateContext.Provider>
   )
 }

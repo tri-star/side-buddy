@@ -1,10 +1,8 @@
-import { css } from "@emotion/react"
-import { useSidebar } from "./use-sidebar"
-import { type ChatRole } from "@/domain/chat"
-
+import { css } from '@emotion/react'
+import { useSidebar } from './use-sidebar'
+import { type ChatRole } from '@/domain/chat'
 
 export function MessageForm() {
-
   const {
     state,
     handleRoleChange,
@@ -16,8 +14,8 @@ export function MessageForm() {
   } = useSidebar()
 
   const questionInputAreaStyle = css({
-    display: "flex",
-    flexDirection: "column",
+    display: 'flex',
+    flexDirection: 'column',
     width: '100%',
     height: '30%',
   })
@@ -33,7 +31,7 @@ export function MessageForm() {
     color: 'var(--app-editor-foreground)',
     '&:focus': {
       outline: '1px solid var(--app-editor-focus-outline)',
-    }
+    },
   })
 
   const formRowStyle = css({
@@ -45,9 +43,7 @@ export function MessageForm() {
     alignItems: 'center',
     gap: '10px',
   })
-  const formLabelStyle = css({
-
-  })
+  const formLabelStyle = css({})
   const temperatureInputStyle = css({
     width: '50px',
   })
@@ -67,36 +63,53 @@ export function MessageForm() {
       backgroundColor: 'var(--app-button-disabledBackground)',
       cursor: 'initial',
     },
-
   })
-
 
   return (
     <div css={questionInputAreaStyle}>
-    <div css={formRowStyle}>
-      <p css={formLabelStyle}>Role</p>
-      <select value={state.role} onChange={ e => { handleRoleChange(e.target.value as ChatRole) } }>
-        <option>system</option>
-        <option>assistant</option>
-        <option>user</option>
-      </select>
-      <p css={formLabelStyle}>Temperature</p>
-      <input
-        type="number"
-        css={temperatureInputStyle}
-        value={state.temperature}
-        onChange={e => { handleTemperatureChange(parseFloat(e.target.value)); } }
-        step={0.1}
-        max={1}
+      <div css={formRowStyle}>
+        <p css={formLabelStyle}>Role</p>
+        <select
+          value={state.role}
+          onChange={(e) => {
+            handleRoleChange(e.target.value as ChatRole)
+          }}
+        >
+          <option>system</option>
+          <option>assistant</option>
+          <option>user</option>
+        </select>
+        <p css={formLabelStyle}>Temperature</p>
+        <input
+          type="number"
+          css={temperatureInputStyle}
+          value={state.temperature}
+          onChange={(e) => {
+            handleTemperatureChange(parseFloat(e.target.value))
+          }}
+          step={0.1}
+          max={1}
+        />
+      </div>
+      <textarea
+        css={textAreaStyle}
+        onChange={(e) => {
+          handleMessageChange(e.target.value)
+        }}
+        value={state.message}
+        onKeyDown={(e) => {
+          handleKeyDown(e)
+        }}
       />
+      <button
+        css={submitButtonStyle}
+        disabled={!canSubmit()}
+        onClick={() => {
+          void submit()
+        }}
+      >
+        Submit
+      </button>
     </div>
-    <textarea
-      css={textAreaStyle}
-      onChange={e => { handleMessageChange(e.target.value); }}
-      value={state.message}
-      onKeyDown={e => { handleKeyDown(e); }}
-    />
-    <button css={submitButtonStyle} disabled={!canSubmit()} onClick={() => {void submit()}}>Submit</button>
-  </div>
   )
 }

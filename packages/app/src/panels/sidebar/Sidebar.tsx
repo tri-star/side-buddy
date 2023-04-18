@@ -1,15 +1,14 @@
-import { css } from "@emotion/react"
-import { useEffect } from "react"
-import { useSidebar } from "./use-sidebar"
-import { Spinner } from "@/components/Spinner"
-import { ApiKeyForm } from "./ApiKeyForm"
+import { css } from '@emotion/react'
+import { useEffect } from 'react'
+import { useSidebar } from './use-sidebar'
+import { Spinner } from '@/components/Spinner'
+import { ApiKeyForm } from './ApiKeyForm'
 import { faSave, faTrashCan } from '@fortawesome/free-regular-svg-icons'
-import { IconButton } from "@/components/IconButton"
-import { MessageList } from "./MessageList"
-import { MessageForm } from "./MessageForm"
+import { IconButton } from '@/components/IconButton'
+import { MessageList } from './MessageList'
+import { MessageForm } from './MessageForm'
 
-function Sidebar () {
-
+function Sidebar() {
   const {
     init,
     handleThreadTitleChange,
@@ -19,7 +18,7 @@ function Sidebar () {
   } = useSidebar()
 
   useEffect(() => {
-     init()
+    init()
   }, [init])
 
   const containerStyle = css({
@@ -32,20 +31,22 @@ function Sidebar () {
     display: 'flex',
   })
 
-  if(state.config === undefined) {
+  if (state.config === undefined) {
     return (
-      <div css={{
-        display: 'flex',
-        height: '100%',
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}>
+      <div
+        css={{
+          display: 'flex',
+          height: '100%',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
         <Spinner />
       </div>
     )
   }
-  if(state.config?.apiKey === '') {
-    return (<ApiKeyForm />)
+  if (state.config?.apiKey === '') {
+    return <ApiKeyForm />
   }
 
   return (
@@ -60,17 +61,19 @@ function Sidebar () {
             color: 'var(--app-editor-foreground)',
             '&:focus': {
               outline: '1px solid var(--app-editor-focus-outline)',
-            }
+            },
           }}
           placeholder="タイトル(省略した場合は自動入力されます)"
           value={state.thread.title}
-          onChange={e => { handleThreadTitleChange(e.target.value); }}
+          onChange={(e) => {
+            handleThreadTitleChange(e.target.value)
+          }}
         />
-        <IconButton icon={faSave} onClick={handleSaveThread}/>
-        <IconButton icon={faTrashCan} onClick={handleClearThread}/>
+        <IconButton icon={faSave} onClick={handleSaveThread} />
+        <IconButton icon={faTrashCan} onClick={handleClearThread} />
       </div>
-      <MessageList/>
-      <MessageForm/>
+      <MessageList />
+      <MessageForm />
     </div>
   )
 }
