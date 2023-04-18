@@ -58,7 +58,7 @@
     "watch-tests": "tsc -p . -w --outDir out",
     "pretest": "yarn run compile-tests && yarn run compile && yarn run lint",
     "lint": "yarn lint-eslint && yarn lint-prettier && yarn type-check",
-    "lint-eslint": "eslint src ./packages/app --ext ts,tsx,js",
+    "lint-eslint": "eslint -c .eslintrc.js src ./packages/app --ext ts,tsx,js",
     "lint-prettier": "prettier --check ./src/**/*.{ts,tsx} ./packages/app/**/*.{ts,tsx}",
     "type-check": "tsc -p . --noemit",
     "format": "prettier --write ./src/**/*.{ts,tsx} ./packages/app/**/*.{ts,tsx}",
