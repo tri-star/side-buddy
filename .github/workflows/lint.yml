@@ -22,6 +22,8 @@ jobs:
       - name: Install dependencies
         run: |
           yarn install
+          cd packages/app
+          yarn install
 
       - name: Lint
         run: yarn lint
