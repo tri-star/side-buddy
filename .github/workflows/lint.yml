@@ -1,4 +1,4 @@
-name: Test build extension
+name: Lint
 
 on:
   pull_request_target:
@@ -22,17 +22,11 @@ jobs:
       - name: Install dependencies
         run: |
           yarn install
-          cd packages/app
-          yarn install
 
-      - name: Build extension for production build
-        run: |
-          cd packages/app
-          yarn build
-          cd ../..
-          yarn package
+      - name: Lint
+        run: yarn lint
 
-      - name: Notify slack
+      - name: Notify slack on failure
         if: ${{ failure() }}
         uses: slackapi/slack-github-action@v1.23.0
         with:
@@ -44,7 +38,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "VSCode拡張のビルドに失敗しました。"
+                    "text": "LINT、型チェックに失敗しました。"
                   }
                 },
                 {
