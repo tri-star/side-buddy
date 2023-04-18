@@ -1,0 +1,60 @@
+name: Test build extension
+
+on:
+  pull_request_target:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+
+      - name: Install dependencies
+        run: |
+          yarn install
+          cd packages/app
+          yarn install
+
+      - name: Build extension for production build
+        run: |
+          cd packages/app
+          yarn build
+          cd ../..
+          yarn package
+
+      - name: Notify slack
+        if: ${{ failure() }}
+        uses: slackapi/slack-github-action@v1.23.0
+        with:
+          channel-id: ${{ vars.SLACK_CHANNEL }}
+          payload: |
+            {
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "VSCode拡張のビルドに失敗しました。"
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "<${{github.server_url}}/${{github.repository}}/actions/runs/${{github.run_id}}|GitHub Actions ジョブ結果>"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_CHANNEL: ${{ vars.SLACK_CHANNEL }}
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
