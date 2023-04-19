@@ -2,13 +2,21 @@ import { type Thread } from '@/domain/thread'
 import { css } from '@emotion/react'
 import { faBook } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { type MouseEvent as ReactMouseEvent, useRef } from 'react'
 
 type Props = {
   thread: Thread
   handleClick: (threadId: string) => void
+  handleRightClick: (threadId: string) => void
 }
 
-export function ThreadListItem({ thread, handleClick }: Props) {
+export function ThreadListItem({
+  thread,
+  handleClick,
+  handleRightClick,
+}: Props) {
+  const menuRef = useRef<HTMLDivElement>(null)
+
   const lineStyle = css({
     display: 'flex',
     cursor: 'pointer',
@@ -21,7 +29,7 @@ export function ThreadListItem({ thread, handleClick }: Props) {
     '& > svg': {
       marginLeft: '5px',
     },
-    '& > p': {
+    '& > div': {
       flexGrow: 1,
       overflow: 'hidden',
       textOverflow: 'elipsis',
@@ -39,6 +47,14 @@ export function ThreadListItem({ thread, handleClick }: Props) {
     },
   })
 
+  const handleContextMenu = (
+    e: ReactMouseEvent<HTMLAnchorElement, MouseEvent>
+  ) => {
+    console.log('click')
+    e.preventDefault()
+    handleRightClick(thread.id)
+  }
+
   return (
     <a
       key={thread.id}
@@ -48,9 +64,14 @@ export function ThreadListItem({ thread, handleClick }: Props) {
       onClick={() => {
         handleClick(thread.id)
       }}
+      onContextMenu={(e) => {
+        handleContextMenu(e)
+      }}
     >
       <FontAwesomeIcon icon={faBook} />
-      <p title={thread.title}>{thread.title}</p>
+      <p ref={menuRef} title={thread.title}>
+        {thread.title}
+      </p>
     </a>
   )
 }

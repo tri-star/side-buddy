@@ -4,9 +4,11 @@ import { type ExtensionMessage } from '@/domain/extension-message'
 import { type Thread } from '@/domain/thread'
 import { type ReactElement, useEffect, useState } from 'react'
 import { ThreadListItem } from './ThreadListItem'
+import { ContextMenu } from '@/components/ContextMenu'
 
 export function ThreadList(): ReactElement {
   const [threads, setThreads] = useState<Thread[]>([])
+  const [showMenu, setShowMenu] = useState<boolean>(false)
 
   useEffect(() => {
     listenExtensionMessage((message: ExtensionMessage) => {
@@ -30,6 +32,10 @@ export function ThreadList(): ReactElement {
     })
   }
 
+  const handleRightClick = (threadId: string) => {
+    setShowMenu(true)
+  }
+
   return (
     <div>
       {threads.map((thread) => {
@@ -37,10 +43,12 @@ export function ThreadList(): ReactElement {
           <ThreadListItem
             thread={thread}
             handleClick={handleClick}
+            handleRightClick={handleRightClick}
             key={thread.id}
           />
         )
       })}
+      <ContextMenu show={showMenu} x={0} y={0} entries={[]} />
     </div>
   )
 }
