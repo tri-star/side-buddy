@@ -47,31 +47,26 @@ export function ThreadListItem({
     },
   })
 
-  const handleContextMenu = (
-    e: ReactMouseEvent<HTMLAnchorElement, MouseEvent>
-  ) => {
-    console.log('click')
-    e.preventDefault()
+  const handleContextMenu = (e: ReactMouseEvent<HTMLElement, MouseEvent>) => {
     handleRightClick(thread.id)
   }
 
   return (
-    <a
+    <div
       key={thread.id}
       css={lineStyle}
-      href="void"
-      tabIndex={0}
-      onClick={() => {
+      onClick={(e) => {
         handleClick(thread.id)
       }}
       onContextMenu={(e) => {
         handleContextMenu(e)
+        e.preventDefault()
       }}
     >
       <FontAwesomeIcon icon={faBook} />
       <p ref={menuRef} title={thread.title}>
         {thread.title}
       </p>
-    </a>
+    </div>
   )
 }
