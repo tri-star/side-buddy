@@ -1,7 +1,7 @@
 import { css } from '@emotion/react'
 import { type IconProp } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 
 export type MenuEntry = {
   id: string
@@ -29,6 +29,21 @@ export function ContextMenu({
 }: Props) {
   const modalRef = useRef<HTMLDivElement>(null)
 
+  const handleKeyDown = (e: KeyboardEvent) => {
+    console.log(e)
+    if (e.key === 'Escape') {
+      onCancel()
+    }
+  }
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  })
+
+  // メニューをコンテナ要素内に収める
   const adjustPosition = (modal: HTMLElement, container: HTMLElement) => {
     const modalRect = modal.getBoundingClientRect()
     const containerRect = container.getBoundingClientRect()
