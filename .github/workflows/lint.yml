@@ -31,7 +31,6 @@ jobs:
           node-version: '18.x'
 
       - name: Install dependencies
-        if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' }}
         run: |
           yarn install
           cd packages/app
