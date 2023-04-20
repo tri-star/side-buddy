@@ -12,7 +12,7 @@ import {
 import { ThreadListItem } from './ThreadListItem'
 import { ContextMenu } from '@/components/ContextMenu'
 import { useContextMenu } from '@/hooks/use-context-menu'
-import { faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faTrash, faUpload } from '@fortawesome/free-solid-svg-icons'
 
 export function ThreadList(): ReactElement {
   const containerRef = useRef(null)
@@ -47,9 +47,21 @@ export function ThreadList(): ReactElement {
   ) => {
     const menues = [
       {
+        id: 'open',
+        icon: faUpload,
+        title: 'load',
+        onClick: () => {
+          sendPanelMessage({
+            type: 'load-thread',
+            source: 'side-buddy-panel',
+            threadId,
+          })
+        },
+      },
+      {
         id: 'remove',
         icon: faTrash,
-        label: '',
+        title: 'remove',
         onClick: () => {
           sendPanelMessage({
             type: 'remove-thread',

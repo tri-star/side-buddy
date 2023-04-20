@@ -3,10 +3,13 @@ import { type IconProp } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useEffect, useRef } from 'react'
 
+// 今の時点ではアイコンのみ表示する想定。
+// アイコン+テキストのメニューが必要になった時、「アイコン(+title)のみ」と「アイコン+ラベル」の
+// 両方に対応できるようにする。
 export type MenuEntry = {
   id: string
   icon: IconProp
-  label: string
+  title: string
   onClick: () => void
 }
 
@@ -30,7 +33,6 @@ export function ContextMenu({
   const modalRef = useRef<HTMLDivElement>(null)
 
   const handleKeyDown = (e: KeyboardEvent) => {
-    console.log(e)
     if (e.key === 'Escape') {
       onCancel()
     }
@@ -75,7 +77,7 @@ export function ContextMenu({
     left: 0,
     width: '100%',
     height: '100%',
-    backgroundColor: 'rgba(0, 0, 0, 0.2)',
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
     zIndex: 1000,
   })
 
@@ -88,7 +90,8 @@ export function ContextMenu({
     border: '1px solid black',
     borderRadius: '5px',
     '& ul': {
-      display: 'block',
+      display: 'flex',
+      flexDirection: 'row',
     },
     '& li': {
       display: 'block',
@@ -98,9 +101,7 @@ export function ContextMenu({
       padding: '5px 10px',
     },
     '& a': {
-      display: 'flex',
       textDecoration: 'none',
-      fontSize: '0.75rem',
     },
     zIndex: 1001,
   })
@@ -118,13 +119,9 @@ export function ContextMenu({
                     entry.onClick()
                     onCancel()
                   }}
+                  title={entry.title}
                 >
-                  {entry.icon != null ? (
-                    <FontAwesomeIcon icon={entry.icon} />
-                  ) : (
-                    ''
-                  )}
-                  {entry.label}
+                  <FontAwesomeIcon icon={entry.icon} />
                 </a>
               </li>
             )

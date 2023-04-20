@@ -75,6 +75,9 @@ class ThreadListProvider implements vscode.WebviewViewProvider {
       case 'load-thread':
         void this.loadThread(parsedMessage.threadId)
         break
+      case 'remove-thread':
+        void this.removeThread(parsedMessage.threadId)
+        break
     }
   }
 
@@ -92,6 +95,14 @@ class ThreadListProvider implements vscode.WebviewViewProvider {
 
   async loadThread(threadId: string) {
     this.extensionEventEmitter.emit('load-thread', threadId)
+  }
+
+  async removeThread(threadId: string) {
+    if (this._view == null) {
+      throw new Error('_viewがセットされていません')
+    }
+    await this._threadRepository.remove(threadId)
+    await this.handleUpdateThreadList()
   }
 
   private async handleUpdateThreadList() {
