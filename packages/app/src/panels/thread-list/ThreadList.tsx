@@ -12,6 +12,7 @@ import {
 import { ThreadListItem } from './ThreadListItem'
 import { ContextMenu } from '@/components/ContextMenu'
 import { useContextMenu } from '@/hooks/use-context-menu'
+import { faTrash } from '@fortawesome/free-solid-svg-icons'
 
 export function ThreadList(): ReactElement {
   const containerRef = useRef(null)
@@ -40,8 +41,26 @@ export function ThreadList(): ReactElement {
     })
   }
 
-  const handleRightClick = (e: ReactMouseEvent<HTMLElement, MouseEvent>) => {
-    contextMenu.showMenu(e, [], containerRef.current)
+  const handleRightClick = (
+    e: ReactMouseEvent<HTMLElement, MouseEvent>,
+    threadId: string
+  ) => {
+    const menues = [
+      {
+        id: 'remove',
+        icon: faTrash,
+        label: '',
+        onClick: () => {
+          sendPanelMessage({
+            type: 'remove-thread',
+            source: 'side-buddy-panel',
+            threadId,
+          })
+        },
+      },
+    ]
+
+    contextMenu.showMenu(e, menues, containerRef.current)
   }
   const handleCancel = () => {
     contextMenu.closeMenu()
@@ -54,8 +73,8 @@ export function ThreadList(): ReactElement {
           <ThreadListItem
             thread={thread}
             handleClick={handleClick}
-            handleRightClick={(e) => {
-              handleRightClick(e)
+            handleRightClick={(e, threadId) => {
+              handleRightClick(e, threadId)
             }}
             key={thread.id}
           />

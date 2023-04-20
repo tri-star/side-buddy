@@ -1,7 +1,11 @@
 import { css } from '@emotion/react'
+import { type IconProp } from '@fortawesome/fontawesome-svg-core'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useRef } from 'react'
 
 export type MenuEntry = {
+  id: string
+  icon: IconProp
   label: string
   onClick: () => void
 }
@@ -91,9 +95,25 @@ export function ContextMenu({
       <div css={modalMaskStyle} onClick={onCancel}></div>
       <div css={modalStyle} ref={modalRef}>
         <ul>
-          <li>
-            <a href="void">DELETE</a>
-          </li>
+          {entries.map((entry) => {
+            return (
+              <li key={entry.id}>
+                <a
+                  onClick={() => {
+                    entry.onClick()
+                    onCancel()
+                  }}
+                >
+                  {entry.icon != null ? (
+                    <FontAwesomeIcon icon={entry.icon} />
+                  ) : (
+                    ''
+                  )}
+                  {entry.label}
+                </a>
+              </li>
+            )
+          })}
         </ul>
       </div>
     </div>
