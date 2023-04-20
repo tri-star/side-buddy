@@ -35,6 +35,9 @@ export function ThreadList(): ReactElement {
   const handleRightClick = (threadId: string) => {
     setShowMenu(true)
   }
+  const handleCancel = () => {
+    setShowMenu(false)
+  }
 
   return (
     <div>
@@ -48,7 +51,13 @@ export function ThreadList(): ReactElement {
           />
         )
       })}
-      <ContextMenu show={showMenu} x={0} y={0} entries={[]} />
+      <ContextMenu
+        show={showMenu}
+        x={0}
+        y={0}
+        entries={[]}
+        onCancel={handleCancel}
+      />
     </div>
   )
 }
