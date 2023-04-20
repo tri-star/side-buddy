@@ -2,13 +2,22 @@ import { listenExtensionMessage } from '@/api/vs-code/listen-extension-message'
 import { sendPanelMessage } from '@/api/vs-code/send-panel-message'
 import { type ExtensionMessage } from '@/domain/extension-message'
 import { type Thread } from '@/domain/thread'
-import { css } from '@emotion/react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { type ReactElement, useEffect, useState } from 'react'
-import { faBook } from '@fortawesome/free-solid-svg-icons'
+import {
+  type MouseEvent as ReactMouseEvent,
+  type ReactElement,
+  useEffect,
+  useState,
+  useRef,
+} from 'react'
+import { ThreadListItem } from './ThreadListItem'
+import { ContextMenu } from '@/components/ContextMenu'
+import { useContextMenu } from '@/hooks/use-context-menu'
+import { faTrash, faUpload } from '@fortawesome/free-solid-svg-icons'
 
 export function ThreadList(): ReactElement {
+  const containerRef = useRef(null)
   const [threads, setThreads] = useState<Thread[]>([])
+  const contextMenu = useContextMenu()
 
   useEffect(() => {
     listenExtensionMessage((message: ExtensionMessage) => {
@@ -32,54 +41,58 @@ export function ThreadList(): ReactElement {
     })
   }
 
-  const lineStyle = css({
-    display: 'flex',
-    cursor: 'pointer',
-    justifyContent: 'start',
-    alignItems: 'center',
-    padding: '5px 2px',
-    gap: '5px,',
-    width: '100%',
-    color: 'var(--app-editor-foreground)',
-    '& > svg': {
-      marginLeft: '5px',
-    },
-    '& > p': {
-      flexGrow: 1,
-      overflow: 'hidden',
-      textOverflow: 'elipsis',
-      whiteSpace: 'nowrap',
-      marginLeft: '5px',
-      width: '100%',
-    },
-    '&:hover': {
-      color: 'var(--app-editor-foreground)',
-      backgroundColor: 'var(--app-list-hoverBackground)',
-      transition: '0.3s all ease',
-    },
-    '&:focus': {
-      outline: '1ps dashed var(--app-editor-focus-outline)',
-    },
-  })
+  const handleRightClick = (
+    e: ReactMouseEvent<HTMLElement, MouseEvent>,
+    threadId: string
+  ) => {
+    const menues = [
+      {
+        id: 'open',
+        icon: faUpload,
+        title: 'load',
+        onClick: () => {
+          sendPanelMessage({
+            type: 'load-thread',
+            source: 'side-buddy-panel',
+            threadId,
+          })
+        },
+      },
+      {
+        id: 'remove',
+        icon: faTrash,
+        title: 'remove',
+        onClick: () => {
+          sendPanelMessage({
+            type: 'remove-thread',
+            source: 'side-buddy-panel',
+            threadId,
+          })
+        },
+      },
+    ]
+
+    contextMenu.showMenu(e, menues, containerRef.current)
+  }
+  const handleCancel = () => {
+    contextMenu.closeMenu()
+  }
 
   return (
-    <div>
+    <div ref={containerRef}>
       {threads.map((thread) => {
         return (
-          <a
-            key={thread.id}
-            css={lineStyle}
-            href="void"
-            tabIndex={0}
-            onClick={() => {
-              handleClick(thread.id)
+          <ThreadListItem
+            thread={thread}
+            handleClick={handleClick}
+            handleRightClick={(e, threadId) => {
+              handleRightClick(e, threadId)
             }}
-          >
-            <FontAwesomeIcon icon={faBook} />
-            <p title={thread.title}>{thread.title}</p>
-          </a>
+            key={thread.id}
+          />
         )
       })}
+      <ContextMenu {...contextMenu.props} onCancel={handleCancel} />
     </div>
   )
 }

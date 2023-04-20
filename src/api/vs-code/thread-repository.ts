@@ -6,6 +6,7 @@ export interface ThreadRepositoryInterface {
   save: (thread: Thread) => Promise<void>
   fetchList: () => Promise<Thread[]>
   find: (threadId: string) => Promise<Thread | undefined>
+  remove: (threadId: string) => Promise<void>
 }
 
 export class ThreadRepository implements ThreadRepositoryInterface {
@@ -45,5 +46,11 @@ export class ThreadRepository implements ThreadRepositoryInterface {
   async find(threadId: string): Promise<Thread | undefined> {
     const threads = await this.fetchList()
     return threads.find((t) => t.id === threadId)
+  }
+
+  async remove(threadId: string) {
+    const threads = await this.fetchList()
+    const newThreads = threads.filter((t) => t.id !== threadId)
+    await this._context.globalState.update('side-buddy.thread-list', newThreads)
   }
 }

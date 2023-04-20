@@ -56,6 +56,7 @@ module.exports = {
 
     'jsx-a11y/click-events-have-key-events': 'off', // divタグなどにonClickを付けるがキーを割り当てないことがあるのでoff
     'jsx-a11y/no-static-element-interactions': 'off', // divタグなどにonClickを付けたいときがあるのでoff
+    'jsx-a11y/anchor-is-valid': 'off', // aタグを使うときにhrefを付けないことがあるのでoff
   },
   settings: {
     react: {

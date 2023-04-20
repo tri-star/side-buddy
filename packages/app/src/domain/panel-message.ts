@@ -36,12 +36,19 @@ const loadThreadSchema = zod.object({
   threadId: zod.string(),
 })
 
+const removeThreadSchema = zod.object({
+  type: zod.literal('remove-thread'),
+  source: zod.literal('side-buddy-panel'),
+  threadId: zod.string(),
+})
+
 export const panelMessageSchema = zod.discriminatedUnion('type', [
   loadedSchema,
   logMessageSchema,
   setApiKeySchema,
   saveThreadListSchema,
   loadThreadSchema,
+  removeThreadSchema,
 ])
 
 export type PanelMessage = zod.infer<typeof panelMessageSchema>
