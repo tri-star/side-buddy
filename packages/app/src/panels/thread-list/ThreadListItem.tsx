@@ -7,7 +7,10 @@ import { type MouseEvent as ReactMouseEvent, useRef } from 'react'
 type Props = {
   thread: Thread
   handleClick: (threadId: string) => void
-  handleRightClick: (threadId: string) => void
+  handleRightClick: (
+    e: ReactMouseEvent<HTMLElement, MouseEvent>,
+    threadId: string
+  ) => void
 }
 
 export function ThreadListItem({
@@ -48,7 +51,7 @@ export function ThreadListItem({
   })
 
   const handleContextMenu = (e: ReactMouseEvent<HTMLElement, MouseEvent>) => {
-    handleRightClick(thread.id)
+    handleRightClick(e, thread.id)
   }
 
   return (

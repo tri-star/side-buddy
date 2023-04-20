@@ -10,13 +10,39 @@ type Props = {
   show: boolean
   x: number
   y: number
-  parent?: HTMLElement
   entries: MenuEntry[]
   onCancel: () => void
+  container: HTMLElement | null
 }
 
-export function ContextMenu({ show, x, y, parent, entries, onCancel }: Props) {
-  const modalRef = useRef(null)
+export function ContextMenu({
+  show,
+  x,
+  y,
+  entries,
+  onCancel,
+  container = null,
+}: Props) {
+  const modalRef = useRef<HTMLDivElement>(null)
+
+  const adjustPosition = (modal: HTMLElement, container: HTMLElement) => {
+    const modalRect = modal.getBoundingClientRect()
+    const containerRect = container.getBoundingClientRect()
+
+    const newX =
+      x + modalRect.width > containerRect.right
+        ? containerRect.right - modalRect.width
+        : x
+
+    return {
+      x: newX,
+    }
+  }
+
+  if (modalRef.current != null && container != null) {
+    const { x: newX } = adjustPosition(modalRef.current, container)
+    x = newX
+  }
 
   const modalVisibleStyle = css({
     opacity: show ? 1 : 0,
