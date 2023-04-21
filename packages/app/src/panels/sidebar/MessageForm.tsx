@@ -88,7 +88,7 @@ export function MessageForm() {
             handleTemperatureChange(parseFloat(e.target.value))
           }}
           step={0.1}
-          max={1}
+          max={2}
         />
       </div>
       <textarea
@@ -108,7 +108,7 @@ export function MessageForm() {
           void submit()
         }}
       >
-        Submit
+        Submit(Ctrl / Shift / Command + Enter)
       </button>
     </div>
   )

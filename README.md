@@ -1,34 +1,55 @@
-# side-buddy README
+# Side Buddy
 
-## 概要
+## Overview
 
-VSCode のサイドメニューに OpenAI API を使用したチャット機能を常駐させる拡張です。
-現在開発途中ですが以下の機能を用意する予定です。
+Your friend living in the sidebar, powered by OpenAI API(currently supported gpt-3.5-turbo).
+You can specify the role and temperature, and refer to conversation history(shared between Windows/WSL).
 
-- role や temperature などを指定してメッセージ送信
-- 端末を跨ったチャット履歴の保存
-- スレッド内のメッセージの削除
-- スレッド全体、または一部をエクスポート
-- プロンプトのお気に入り登録
-- リクエスト内容を curl 形式でコピー
+## Requirements
 
-## イメージ
+This plugin needs Open AI API key. (sk-xxxx)
 
-![](./docs/images/preview.png)
+(The API key is securely stored in VSCode's Secret storage)
 
-## ロードマップ
+## Main features
 
-- [x] サイドバーを閉じても状態を保持する
-- [x] スレッドの保存(履歴の保存)
-- [ ] スレッド履歴を S3 などの外部ストレージに保存
-  - [ ] 端末を跨って同期
-- [ ] 生成停止を可能にする
-- [x] API キーを再設定出来るように
-- [x] スレッド内のメッセージを削除できるようにする
-- [ ] リクエスト内容を curl 形式でコピー
+### Chat with GPT-3.5
 
-## ビルド手順
+![](./docs/images/main-feature01.gif)
 
-TODO
+---
 
-## 設定項目
+### Remove partial message
+
+You can remove partial messages in a thread. Since GPT-3.5 has a limited number of tokens (4,096 tokens in 1 thread), it is useful to build long contextual conversations.
+
+![](./docs/images/main-feature02.png)
+
+---
+
+### Thread history
+
+The contents of the thread can be saved. The saved contents are shared between Windows/WSL and can be loaded at any time.
+
+![](./docs/images/main-feature02.gif)
+
+---
+
+### Role, temperature
+
+You can specify role, temperature.
+
+![](./docs/images/main-feature03.png)
+
+- Role is useful to set the behavior of the bot.
+- The temperature parameter is used to control the diversity of generated text. This parameter is specified in the range of 0 to 2, and the higher the value, the more diverse the responses generated. On the other hand, the lower the value, the more predictable the responses generated.
+
+---
+
+## Roadnap
+
+- [ ] Keep thread history to Online Storage(e.g. S3)
+- [ ] Stop message generaiton
+- [ ] Bookmark a prompt
+- [ ] Act against selected text in editor
+- [ ] Copy request as curl command line

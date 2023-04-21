@@ -210,7 +210,10 @@ export function useSidebar(
    */
   const handleKeyDown = useCallback(
     (event: KeyboardEvent<HTMLTextAreaElement>) => {
-      if (event.key === 'Enter' && event.ctrlKey) {
+      if (
+        event.key === 'Enter' &&
+        (event.ctrlKey || event.shiftKey || event.metaKey)
+      ) {
         void submit()
       }
     },
