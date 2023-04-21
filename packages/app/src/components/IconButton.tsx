@@ -5,10 +5,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 type IconButtonProps = {
   onClick: () => void
   icon: IconDefinition
+  title: string
 }
 
-export function IconButton(props: IconButtonProps) {
-  const { icon, onClick } = props
+export function IconButton({ icon, onClick, title }: IconButtonProps) {
   const buttonStyle = css({
     // padding: '10px 5px',
     color: 'var(--app-button-foreground)',
@@ -27,6 +27,7 @@ export function IconButton(props: IconButtonProps) {
 
   return (
     <button
+      title={title}
       css={buttonStyle}
       onClick={() => {
         onClick()

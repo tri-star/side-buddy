@@ -69,8 +69,12 @@ function Sidebar() {
             handleThreadTitleChange(e.target.value)
           }}
         />
-        <IconButton icon={faSave} onClick={handleSaveThread} />
-        <IconButton icon={faTrashCan} onClick={handleClearThread} />
+        <IconButton icon={faSave} onClick={handleSaveThread} title="save" />
+        <IconButton
+          icon={faTrashCan}
+          onClick={handleClearThread}
+          title="clear"
+        />
       </div>
       <MessageList />
       <MessageForm />
