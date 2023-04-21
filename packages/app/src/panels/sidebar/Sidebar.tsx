@@ -63,7 +63,7 @@ function Sidebar() {
               outline: '1px solid var(--app-editor-focus-outline)',
             },
           }}
-          placeholder="タイトル(省略した場合は自動入力されます)"
+          placeholder="Title (If left blank, it will be automatically completed)"
           value={state.thread.title}
           onChange={(e) => {
             handleThreadTitleChange(e.target.value)

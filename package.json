@@ -34,7 +34,7 @@
         {
           "type": "webview",
           "id": "side-buddy.thread-list",
-          "name": "スレッド一覧",
+          "name": "Thread history",
           "visibility": "collapsed"
         }
       ]
