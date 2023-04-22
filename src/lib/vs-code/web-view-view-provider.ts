@@ -34,6 +34,7 @@ export function getHtmlForWebview(
       manifest[entryFileName].file
     )
   )
+  const nonce = generateNonce()
 
   const styleUri = webview.asWebviewUri(
     vscode.Uri.joinPath(
@@ -52,13 +53,13 @@ export function getHtmlForWebview(
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="default-src 'none';
       img-src ${webview.cspSource} https:;
-      script-src ${webview.cspSource};
-      style-src ${webview.cspSource};">
+      script-src ${webview.cspSource} 'nonce-${nonce}';
+      style-src ${webview.cspSource} 'nonce-${nonce}';">
   </head>
   <body>
     <div id="root"></div>
-    <link rel="stylesheet" href="${styleUri.toString()}" />
-    <script type="module" src="${scriptUri.toString()}"></script>
+    <link rel="stylesheet" href="${styleUri.toString()} nonce="${nonce}" />
+    <script type="module" src="${scriptUri.toString()}" nonce="${nonce}"></script>
   </body>
   </html>
   `
@@ -85,4 +86,17 @@ function findAppChunkFileNames(extensionPath: string): ViteManifest {
   }
 
   return manifest
+}
+
+/**
+ * generate nonce for CSP
+ */
+function generateNonce(): string {
+  let text = ''
+  const possible =
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+  for (let i = 0; i < 32; i++) {
+    text += possible.charAt(Math.floor(Math.random() * possible.length))
+  }
+  return text
 }
