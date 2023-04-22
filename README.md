@@ -46,7 +46,7 @@ You can specify role, temperature.
 
 ---
 
-## Roadnap
+## Roadmap
 
 - [ ] Keep thread history to Online Storage(e.g. S3)
 - [ ] Stop message generaiton
