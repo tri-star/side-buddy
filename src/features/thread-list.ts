@@ -1,5 +1,3 @@
-import * as path from 'path'
-import * as fs from 'fs'
 import * as vscode from 'vscode'
 import { VsCodeLogger } from '@/logging/logger'
 import {
@@ -14,13 +12,7 @@ import {
 } from '@/api/vs-code/thread-repository'
 import { panelMessageSchema } from '@/domain/panel-message'
 import { type ExtensionEventEmitter } from '@/api/extension-event-emitter'
-
-type ViteManifest = {
-  'thread-list.html': {
-    file: string
-    css: string[]
-  }
-}
+import { getHtmlForWebview } from '@/lib/vs-code/web-view-view-provider'
 
 export function registerThreadListPanel(
   context: vscode.ExtensionContext,
@@ -132,78 +124,12 @@ class ThreadListProvider implements vscode.WebviewViewProvider {
       enableScripts: true,
       localResourceRoots: [this._extensionUri],
     }
-    // WebView用のHTMLの構築は他画面でも共通化できる部分が多いので、
-    // 今後ここを共通化していくことを検討する。
-    // - manifestからUriを生成する
-    // - URIとscript/styleなどの種別を渡して動的にタグを生成するなど
-    webviewView.webview.html = this._getHtmlForWebview(webviewView.webview)
+    webviewView.webview.html = getHtmlForWebview(
+      webviewView.webview,
+      this._extensionUri,
+      this._extensionPath,
+      'thread-list.html'
+    )
     webviewView.webview.onDidReceiveMessage(this.onDidReceiveMessage.bind(this))
-  }
-
-  private _getHtmlForWebview(webview: vscode.Webview): string {
-    const manifest = this._findAppChunkFileNames(this._extensionPath)
-    const scriptUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(
-        this._extensionUri,
-        'packages',
-        'app',
-        'dist',
-        manifest['thread-list.html'].file
-      )
-    )
-
-    const styleUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(
-        this._extensionUri,
-        'packages',
-        'app',
-        'dist',
-        manifest['thread-list.html'].css[0]
-      )
-    )
-
-    return `<!doctype html>
-    <html lang="ja">
-    <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta content="default-src 'none';
-        img-src ${webview.cspSource} https:;
-        script-src ${webview.cspSource};
-        style-src ${webview.cspSource};">
-    </head>
-    <body>
-      <div id="root"></div>
-      <link rel="stylesheet" href="${styleUri.toString()}" />
-      <script type="module" src="${scriptUri.toString()}"></script>
-    </body>
-    </html>
-    `
-  }
-
-  private _findAppChunkFileNames(extensionPath: string): ViteManifest {
-    const manifestPath = path.resolve(
-      extensionPath,
-      'packages',
-      'app',
-      'dist',
-      'manifest.json'
-    )
-
-    let manifest: ViteManifest | null = null
-    try {
-      manifest = JSON.parse(
-        fs.readFileSync(manifestPath, 'utf-8')
-      ) as ViteManifest
-    } catch (e) {
-      // TODO: チャンネルにエラーを報告
-      console.error(e)
-    }
-
-    if (manifest == null) {
-      throw new Error('マニフェストのロードに失敗しました')
-    }
-
-    return manifest
   }
 }
