@@ -58,7 +58,7 @@ export function getHtmlForWebview(
   </head>
   <body>
     <div id="root"></div>
-    <link rel="stylesheet" href="${styleUri.toString()} nonce="${nonce}" />
+    <link rel="stylesheet" href="${styleUri.toString()}" nonce="${nonce}" />
     <script type="module" src="${scriptUri.toString()}" nonce="${nonce}"></script>
   </body>
   </html>
