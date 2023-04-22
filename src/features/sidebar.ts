@@ -178,10 +178,6 @@ class SidebarProvider implements vscode.WebviewViewProvider {
       localResourceRoots: [this._extensionUri],
     }
 
-    // WebView用のHTMLの構築は他画面でも共通化できる部分が多いので、
-    // 今後ここを共通化していくことを検討する。
-    // - manifestからUriを生成する
-    // - URIとscript/styleなどの種別を渡して動的にタグを生成するなど
     webviewView.webview.html = getHtmlForWebview(
       webviewView.webview,
       this._extensionUri,
