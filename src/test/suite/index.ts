@@ -1,6 +1,6 @@
 import * as path from 'path'
 import * as Mocha from 'mocha'
-import * as glob from 'glob'
+import { globSync } from 'glob'
 
 // eslint-expect-error
 export async function run(): Promise<void> {
@@ -13,29 +13,26 @@ export async function run(): Promise<void> {
   const testsRoot = path.resolve(__dirname, '..')
 
   await new Promise((resolve, reject) => {
-    glob('**/**.test.js', { cwd: testsRoot }, (err, files) => {
-      if (err != null) {
-        reject(err)
-        return
-      }
+    globSync('**/**.test.js', { cwd: testsRoot }).forEach(
+      (evalue, index, files) => {
+        // Add files to the test suite
+        files.forEach((f) => mocha.addFile(path.resolve(testsRoot, f)))
 
-      // Add files to the test suite
-      files.forEach((f) => mocha.addFile(path.resolve(testsRoot, f)))
-
-      try {
-        // Run the mocha test
-        mocha.run((failures) => {
-          if (failures > 0) {
-            reject(new Error(`${failures} tests failed.`))
-          } else {
-            // @ts-expect-error これから対応
-            resolve()
-          }
-        })
-      } catch (err) {
-        console.error(err)
-        reject(err)
+        try {
+          // Run the mocha test
+          mocha.run((failures) => {
+            if (failures > 0) {
+              reject(new Error(`${failures} tests failed.`))
+            } else {
+              // @ts-expect-error これから対応
+              resolve()
+            }
+          })
+        } catch (err) {
+          console.error(err)
+          reject(err)
+        }
       }
-    })
+    )
   })
 }
