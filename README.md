@@ -11,6 +11,10 @@ This plugin needs Open AI API key. (sk-xxxx)
 
 (The API key is securely stored in VSCode's Secret storage)
 
+## Change log
+
+See [CHANGELOG.md](./CHANGELOG.md)
+
 ## Main features
 
 ### Chat with GPT-3.5
