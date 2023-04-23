@@ -32,7 +32,7 @@ export function ThreadListItem({
     '& > svg': {
       marginLeft: '5px',
     },
-    '& > div': {
+    '& > p': {
       flexGrow: 1,
       overflow: 'hidden',
       textOverflow: 'elipsis',

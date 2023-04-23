@@ -139,11 +139,7 @@ class SidebarProvider implements vscode.WebviewViewProvider {
     }
     await this._threadRepository.save(thread)
     const threads = await this._threadRepository.fetchList()
-    await sendMessage(this._view.webview, {
-      type: 'update-thread-list',
-      source: 'side-buddy-extension',
-      threads,
-    })
+    this.extensionEventEmitter.emit('update-thread', threads)
   }
 
   private async handleLoadThread(threadId: string) {
