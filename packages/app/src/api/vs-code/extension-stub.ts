@@ -74,3 +74,7 @@ export async function startExtensionStub() {
     }
   })
 }
+
+// sidebarのstubに求められる機能
+// - スタート時に設定情報をロードして保持
+// - set-api-key メッセージを受け取ったら、updateConfigで設定情報を通知する

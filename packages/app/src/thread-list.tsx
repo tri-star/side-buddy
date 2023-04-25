@@ -1,16 +1,22 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { isVsCodeEnv } from './api/vs-code/vs-code-api'
-import { startExtensionStubThreadList } from './api/vs-code/extension-stub-thread-list'
 import { ThreadList } from './panels/thread-list/ThreadList'
 import './thread-list.css'
+import { ExtensionBridgeProvider } from './providers/ExtensionBridgeStubProvider'
+import { isVsCodeEnv } from './api/vs-code/vs-code-api'
+import { ThreadListExtensionStub } from './api/vs-code/extension-stub/thread-list-extension-stub'
+
+let extensionStub
 
 if (!isVsCodeEnv()) {
-  void startExtensionStubThreadList()
+  extensionStub = new ThreadListExtensionStub()
+  void extensionStub.start()
 }
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-    <ThreadList />
+    <ExtensionBridgeProvider extensionStubImpl={extensionStub}>
+      <ThreadList />
+    </ExtensionBridgeProvider>
   </React.StrictMode>
 )

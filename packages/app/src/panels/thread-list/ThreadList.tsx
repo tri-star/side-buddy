@@ -1,5 +1,3 @@
-import { listenExtensionMessage } from '@/api/vs-code/listen-extension-message'
-import { sendPanelMessage } from '@/api/vs-code/send-panel-message'
 import { type ExtensionMessage } from '@/domain/extension-message'
 import { type Thread } from '@/domain/thread'
 import {
@@ -8,33 +6,36 @@ import {
   useEffect,
   useState,
   useRef,
+  useContext,
 } from 'react'
 import { ThreadListItem } from './ThreadListItem'
 import { ContextMenu } from '@/components/ContextMenu'
 import { useContextMenu } from '@/hooks/use-context-menu'
 import { faTrash, faUpload } from '@fortawesome/free-solid-svg-icons'
+import { ExtensionBridgeContext } from '@/providers/ExtensionBridgeStubProvider'
 
 export function ThreadList(): ReactElement {
   const containerRef = useRef(null)
   const [threads, setThreads] = useState<Thread[]>([])
   const contextMenu = useContextMenu()
+  const { extensionBridge } = useContext(ExtensionBridgeContext)
 
   useEffect(() => {
-    listenExtensionMessage((message: ExtensionMessage) => {
+    extensionBridge?.listenExtensionMessage((message: ExtensionMessage) => {
       switch (message.type) {
         case 'update-thread-list':
           setThreads(message.threads)
           break
       }
     })
-    sendPanelMessage({
+    extensionBridge?.sendPanelMessage({
       type: 'loaded',
       source: 'side-buddy-panel',
     })
-  }, [])
+  }, [extensionBridge])
 
   const handleClick = (threadId: string) => {
-    sendPanelMessage({
+    extensionBridge?.sendPanelMessage({
       type: 'load-thread',
       source: 'side-buddy-panel',
       threadId,
@@ -51,7 +52,7 @@ export function ThreadList(): ReactElement {
         icon: faUpload,
         title: 'load',
         onClick: () => {
-          sendPanelMessage({
+          extensionBridge?.sendPanelMessage({
             type: 'load-thread',
             source: 'side-buddy-panel',
             threadId,
@@ -63,7 +64,7 @@ export function ThreadList(): ReactElement {
         icon: faTrash,
         title: 'remove',
         onClick: () => {
-          sendPanelMessage({
+          extensionBridge?.sendPanelMessage({
             type: 'remove-thread',
             source: 'side-buddy-panel',
             threadId,
