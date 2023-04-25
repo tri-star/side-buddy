@@ -1,6 +1,6 @@
-import { vsCodeApi } from '@/api/vs-code/vs-code-api'
 import { type AppState } from '@/domain/app-state'
 import { createNewThread } from '@/domain/thread'
+import { ExtensionBridgeContext } from '@/providers/ExtensionBridgeStubProvider'
 import {
   type SetStateAction,
   type Dispatch,
@@ -8,6 +8,7 @@ import {
   createContext,
   useState,
   useCallback,
+  useContext,
 } from 'react'
 
 type UpdateStateCallback = (prevState: AppState) => Partial<AppState>
@@ -40,6 +41,7 @@ export const SidebarStateProvider = ({ children }: PropsWithChildren) => {
     message: '',
     thread: createNewThread(),
   })
+  const { extensionBridge } = useContext(ExtensionBridgeContext)
 
   const [completion, setCompletion] = useState('')
 
@@ -51,7 +53,7 @@ export const SidebarStateProvider = ({ children }: PropsWithChildren) => {
       // newStateがコールバック関数の場合
       if (newState instanceof Function) {
         setState((prev) => {
-          vsCodeApi.setState<AppState>({
+          extensionBridge?.setState<AppState>({
             ...prev,
             ...newState,
           })
@@ -66,7 +68,7 @@ export const SidebarStateProvider = ({ children }: PropsWithChildren) => {
 
       // newStateが更新する値を含んだオブジェクトの場合
       setState((prev) => {
-        vsCodeApi.setState<AppState>({
+        extensionBridge?.setState<AppState>({
           ...prev,
           ...newState,
         })
@@ -77,7 +79,7 @@ export const SidebarStateProvider = ({ children }: PropsWithChildren) => {
         }
       })
     },
-    []
+    [extensionBridge]
   )
 
   return (

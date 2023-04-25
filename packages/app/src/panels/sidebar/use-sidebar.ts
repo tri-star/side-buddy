@@ -1,6 +1,4 @@
 import { type KeyboardEvent, useCallback, useContext } from 'react'
-import { listenExtensionMessage } from '@/api/vs-code/listen-extension-message'
-import { sendPanelMessage } from '@/api/vs-code/send-panel-message'
 import { type ExtensionMessage } from '@/domain/extension-message'
 import { type AppState } from '@/domain/app-state'
 import {
@@ -10,18 +8,19 @@ import {
 } from '@/domain/chat'
 import { gernerateChatStream } from '@/api/open-ai/chat-api'
 import * as ulid from 'ulid'
-import { vsCodeApi } from '@/api/vs-code/vs-code-api'
 import { fetchTitleFromMessage } from '@/api/open-ai/utility-api'
 import { type ThreadRepositoryFactory } from '@/api/thread/thread-repository'
 import { defaultThreadRepositoryFactory } from '@/api/thread/thread-repository'
 import { createNewThread } from '@/domain/thread'
 import { SidebarStateContext } from './SidebarStateProvider'
+import { ExtensionBridgeContext } from '@/providers/ExtensionBridgeStubProvider'
 
 export function useSidebar(
   threadRepositoryFactory: ThreadRepositoryFactory = defaultThreadRepositoryFactory
 ) {
   const { state, updateState, completion, setCompletion } =
     useContext(SidebarStateContext)
+  const { extensionBridge } = useContext(ExtensionBridgeContext)
 
   const threadRepository = threadRepositoryFactory()
 
@@ -68,13 +67,16 @@ export function useSidebar(
    * 初期化処理
    */
   const init = useCallback(() => {
-    listenExtensionMessage(handleExtensionMessage)
-    sendPanelMessage({ type: 'loaded', source: 'side-buddy-panel' })
-    const state = vsCodeApi.getState<AppState>()
+    extensionBridge?.listenExtensionMessage(handleExtensionMessage)
+    extensionBridge?.sendPanelMessage({
+      type: 'loaded',
+      source: 'side-buddy-panel',
+    })
+    const state = extensionBridge?.getState<AppState>()
     if (state != null) {
       updateState(state)
     }
-  }, [updateState, handleExtensionMessage])
+  }, [extensionBridge, updateState, handleExtensionMessage])
 
   /**
    * 送信可能かどうかを返す
@@ -96,16 +98,19 @@ export function useSidebar(
   /**
    * スレッドのタイトルを更新する
    */
-  const handleThreadTitleChange = useCallback((title: string) => {
-    updateState((prev: AppState) => {
-      return {
-        thread: {
-          ...prev.thread,
-          title,
-        },
-      }
-    })
-  }, [])
+  const handleThreadTitleChange = useCallback(
+    (title: string) => {
+      updateState((prev: AppState) => {
+        return {
+          thread: {
+            ...prev.thread,
+            title,
+          },
+        }
+      })
+    },
+    [updateState]
+  )
 
   /**
    * メッセージ欄入力時の処理

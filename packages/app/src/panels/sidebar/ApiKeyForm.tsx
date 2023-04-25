@@ -1,10 +1,10 @@
-import { vsCodeApi } from '@/api/vs-code/vs-code-api'
-import { type PanelMessage } from '@/domain/panel-message'
+import { ExtensionBridgeContext } from '@/providers/ExtensionBridgeStubProvider'
 import { css } from '@emotion/react'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 
 export function ApiKeyForm() {
   const [apiKey, setApiKey] = useState('')
+  const { extensionBridge } = useContext(ExtensionBridgeContext)
 
   const containerStyle = css({
     display: 'flex',
@@ -29,7 +29,7 @@ export function ApiKeyForm() {
   }
 
   const submit = () => {
-    vsCodeApi.postMessage<PanelMessage>({
+    extensionBridge?.sendPanelMessage({
       type: 'set-api-key',
       source: 'side-buddy-panel',
       apiKey,
