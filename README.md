@@ -2,7 +2,7 @@
 
 ## Overview
 
-Your friend living in the sidebar, powered by OpenAI API(currently supported gpt-3.5-turbo).
+Your friend living in the sidebar, powered by OpenAI API(GPT3).
 You can specify the role and temperature, and refer to conversation history(shared between Windows/WSL).
 
 ## Requirements
