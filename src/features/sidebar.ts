@@ -1,16 +1,16 @@
 import * as vscode from 'vscode'
-import { sendMessage } from '@/api/vs-code/send-message'
+import { sendMessage } from '@/api/send-message'
 import { panelMessageSchema } from '@/domain/panel-message'
 import { VsCodeLogger } from '@/logging/logger'
 import {
   ConfigStorage,
   type ConfigStorageInterface,
-} from '@/api/vs-code/config-storage'
+} from '@/api/config-storage'
 import { type AppConfig } from '@/domain/app-config'
 import {
   type ThreadRepositoryInterface,
   ThreadRepository,
-} from '@/api/vs-code/thread-repository'
+} from '@/api/thread-repository'
 import { type Thread } from '@/domain/thread'
 import { type ExtensionEventEmitter } from '@/api/extension-event-emitter'
 import { getHtmlForWebview } from '@/lib/vs-code/web-view-view-provider'

@@ -3,13 +3,13 @@ import { VsCodeLogger } from '@/logging/logger'
 import {
   ConfigStorage,
   type ConfigStorageInterface,
-} from '@/api/vs-code/config-storage'
+} from '@/api/config-storage'
 import { type AppConfig } from '@/domain/app-config'
-import { sendMessage } from '@/api/vs-code/send-message'
+import { sendMessage } from '@/api/send-message'
 import {
   ThreadRepository,
   type ThreadRepositoryInterface,
-} from '@/api/vs-code/thread-repository'
+} from '@/api/thread-repository'
 import { panelMessageSchema } from '@/domain/panel-message'
 import { type ExtensionEventEmitter } from '@/api/extension-event-emitter'
 import { getHtmlForWebview } from '@/lib/vs-code/web-view-view-provider'
