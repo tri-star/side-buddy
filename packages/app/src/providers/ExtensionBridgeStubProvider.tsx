@@ -1,10 +1,10 @@
 import {
   ExtensionBridge,
   type ExtensionBridgeInterface,
-} from '@/api/vs-code/extension-bridge'
-import { ExtensionBridgeStub } from '@/api/vs-code/extension-bridge-stub'
-import { type ExtensionStubInterface } from '@/api/vs-code/extension-stub/extension-stub'
-import { isVsCodeEnv } from '@/api/vs-code/vs-code-api'
+} from '@/api/extension/extension-bridge'
+import { ExtensionBridgeStub } from '@/api/extension/extension-bridge-stub'
+import { type ExtensionStubInterface } from '@/api/extension/extension-stub/extension-stub'
+import { isVsCodeEnv } from '@/api/extension/vs-code-api'
 import { type PropsWithChildren, createContext, useState } from 'react'
 
 export const ExtensionBridgeContext = createContext<{

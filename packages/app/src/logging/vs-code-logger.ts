@@ -1,4 +1,4 @@
-import { vsCodeApi } from '@/api/vs-code/vs-code-api'
+import { vsCodeApi } from '@/api/extension/vs-code-api'
 import { type Logger } from './logger'
 import { type PanelMessage } from '@/domain/panel-message'
 

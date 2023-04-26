@@ -1,4 +1,4 @@
-import { isVsCodeEnv } from '@/api/vs-code/vs-code-api'
+import { isVsCodeEnv } from '@/api/extension/vs-code-api'
 import { ConsoleLogger } from './console-logger'
 import { VsCodeLogger } from './vs-code-logger'
 

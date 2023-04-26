@@ -1,6 +1,6 @@
 import { type Thread } from '@/domain/thread'
 import { ThreadRepositoryLocalStorage } from '@/api/thread/thread-repository-local-storage'
-import { isVsCodeEnv } from '../vs-code/vs-code-api'
+import { isVsCodeEnv } from '@/api/extension/vs-code-api'
 import { ThreadRepositoryVsCode } from './thread-repository-vs-code'
 
 export type ThreadRepositoryFactory = () => ThreadRepositoryInterface
