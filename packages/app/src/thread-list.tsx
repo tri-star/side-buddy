@@ -3,8 +3,8 @@ import ReactDOM from 'react-dom/client'
 import { ThreadList } from './panels/thread-list/ThreadList'
 import './thread-list.css'
 import { ExtensionBridgeProvider } from './providers/ExtensionBridgeStubProvider'
-import { isVsCodeEnv } from './api/vs-code/vs-code-api'
-import { ThreadListExtensionStub } from './api/vs-code/extension-stub/thread-list-extension-stub'
+import { isVsCodeEnv } from './api/extension/vs-code-api'
+import { ThreadListExtensionStub } from './api/extension/extension-stub/thread-list-extension-stub'
 
 let extensionStub
 
