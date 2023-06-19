@@ -20,7 +20,7 @@
   "devDependencies": {
     "@emotion/react": "^11.10.8",
     "@types/react": "^18.2.7",
-    "@types/react-dom": "^18.2.4",
+    "@types/react-dom": "^18.2.5",
     "@vitejs/plugin-react": "^4.0.0",
     "typescript": "^5.0.4",
     "ulid": "^2.3.0",
