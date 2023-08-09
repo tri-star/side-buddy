@@ -100,7 +100,7 @@ export async function* gernerateChatStream(
       Authorization: `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
-      model: 'gpt-3.5-turbo',
+      model: 'gpt-4',
       messages: request.messages.map((message) => {
         return {
           role: message.role,
@@ -110,7 +110,7 @@ export async function* gernerateChatStream(
       temperature: request.temperature,
       frequency_penalty: 0,
       presence_penalty: 0,
-      max_tokens: 1000, // TODO: 最大トークン数は外から指定する
+      // max_tokens: 1000, // TODO: 最大トークン数は外から指定する
       stream: true,
     }),
   })

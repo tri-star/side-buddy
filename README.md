@@ -2,7 +2,7 @@
 
 ## Overview
 
-Your friend living in the sidebar, powered by OpenAI API(GPT3).
+Your friend living in the sidebar, powered by OpenAI API(GPT-4).
 You can specify the role and temperature, and refer to conversation history(shared between Windows/WSL).
 
 ## Requirements
@@ -17,7 +17,7 @@ See [CHANGELOG.md](./CHANGELOG.md)
 
 ## Main features
 
-### Chat with GPT-3.5
+### Chat with GPT-4
 
 ![](./docs/images/main-feature01.gif)
 
@@ -25,7 +25,7 @@ See [CHANGELOG.md](./CHANGELOG.md)
 
 ### Remove partial message
 
-You can remove partial messages in a thread. Since GPT-3.5 has a limited number of tokens (4,096 tokens in 1 thread), it is useful to build long contextual conversations.
+You can remove partial messages in a thread. Since GPT-4 has a limited number of tokens (8,192 tokens in 1 thread), it is useful to build long contextual conversations.
 
 ![](./docs/images/main-feature02.png)
 
