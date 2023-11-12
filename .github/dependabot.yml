@@ -5,11 +5,35 @@
 
 version: 2
 updates:
-  - package-ecosystem: "npm" # See documentation for possible values
-    directory: "/" # Location of package manifests
+  - package-ecosystem: 'npm' # See documentation for possible values
+    directory: '/' # Location of package manifests
     schedule:
-      interval: "weekly"
-  - package-ecosystem: "npm"
-    directory: "/packages/app"
+      interval: 'weekly'
+    groups:
+      patchDependencies:
+        dependency-type: 'production'
+        update-types: ['patch']
+      minorDependencies:
+        dependency-type: 'production'
+        update-types: ['minor']
+      majorDependencies:
+        dependency-type: 'production'
+        update-types: ['major']
+      devDependencies:
+        dependency-type: 'development'
+  - package-ecosystem: 'npm'
+    directory: '/packages/app'
     schedule:
-      interval: "weekly"
+      interval: 'weekly'
+    groups:
+      patchDependencies:
+        dependency-type: 'production'
+        update-types: ['patch']
+      minorDependencies:
+        dependency-type: 'production'
+        update-types: ['minor']
+      majorDependencies:
+        dependency-type: 'production'
+        update-types: ['major']
+      devDependencies:
+        dependency-type: 'development'
