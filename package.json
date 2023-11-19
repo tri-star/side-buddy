@@ -91,5 +91,8 @@
     "webpack": "^5.82.0",
     "webpack-cli": "^5.1.4",
     "zod": "^3.21.4"
+  },
+  "dependencies": {
+    "@tri-star/json-migrate": "^0.1.2"
   }
 }
