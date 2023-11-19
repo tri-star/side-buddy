@@ -18,10 +18,12 @@ export const modelSchema = zod.union([
 export const chatMessageSchema = zod.object({
   id: zod.string().min(1),
   role: roleSchema,
+  model: modelSchema,
   message: zod.string().min(1),
 })
 
 export const chatRequestSchema = zod.object({
+  model: modelSchema,
   temperature: zod.number().min(0).max(2),
   messages: zod.array(chatMessageSchema).min(1),
 })

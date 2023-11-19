@@ -168,6 +168,7 @@ export function useSidebar(
     fetchTitleFromMessage(
       state.config?.apiKey ?? '',
       state.message,
+      state.model,
       state.temperature
     )
       .then((title) => {
@@ -179,6 +180,7 @@ export function useSidebar(
   }, [
     state.config?.apiKey,
     state.message,
+    state.model,
     state.temperature,
     handleThreadTitleChange,
   ])
@@ -190,7 +192,8 @@ export function useSidebar(
     const messageId = ulid.ulid()
     addThreadMessage({
       id: messageId,
-      role: state.role,
+      role: 'user',
+      model: state.model,
       message: state.message,
     })
     updateState({ message: '' })
@@ -203,11 +206,13 @@ export function useSidebar(
 
     for await (const chunk of gernerateChatStream(state.config?.apiKey ?? '', {
       temperature: state.temperature,
+      model: state.model,
       messages: [
         ...state.thread.messages,
         {
           id: messageId,
-          role: state.role,
+          role: 'user',
+          model: state.model,
           message: state.message,
         },
       ],
@@ -218,6 +223,7 @@ export function useSidebar(
     addThreadMessage({
       id: ulid.ulid(),
       role: 'assistant',
+      model: state.model,
       message: completionResult,
     })
     setCompletion('')
