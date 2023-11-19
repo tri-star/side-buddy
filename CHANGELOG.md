@@ -1,5 +1,10 @@
 # Change Log
 
+## v2.2.0
+
+- You can now select model from gpt-3.5-turbo to gpt-4-1106-preview.
+- "Role" is no longer selected because it is generally not specified by user.
+
 ## v2.1.0
 
 - We will change to use the 'gpt-4-1106-preview' model as a model. In this version, only users who can use the gpt-4 model via an API key will be able to use it.
