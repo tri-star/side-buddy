@@ -5,6 +5,7 @@ import {
   type ChatMessage,
   chatRequestSchema,
   type ChatRole,
+  type ChatModel,
 } from '@/domain/chat'
 import { gernerateChatStream } from '@/api/open-ai/chat-api'
 import * as ulid from 'ulid'
@@ -137,6 +138,18 @@ export function useSidebar(
   )
 
   /**
+   * モデルの変更時の処理
+   */
+  const handleModelChange = useCallback(
+    (model: ChatModel) => {
+      updateState({
+        model,
+      })
+    },
+    [updateState]
+  )
+
+  /**
    * temperatureの変更時の処理
    */
   const handleTemperatureChange = useCallback(
@@ -261,6 +274,7 @@ export function useSidebar(
     state,
     handleThreadTitleChange,
     handleRoleChange,
+    handleModelChange,
     handleTemperatureChange,
     handleMessageChange,
     completion,

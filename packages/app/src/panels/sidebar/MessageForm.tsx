@@ -1,11 +1,11 @@
 import { css } from '@emotion/react'
 import { useSidebar } from './use-sidebar'
-import { type ChatRole } from '@/domain/chat'
+import { type ChatModel, chatModels } from '@/domain/chat'
 
 export function MessageForm() {
   const {
     state,
-    handleRoleChange,
+    handleModelChange,
     handleTemperatureChange,
     handleMessageChange,
     handleKeyDown,
@@ -68,16 +68,18 @@ export function MessageForm() {
   return (
     <div css={questionInputAreaStyle}>
       <div css={formRowStyle}>
-        <p css={formLabelStyle}>Role</p>
+        <p css={formLabelStyle}>Model</p>
         <select
-          value={state.role}
+          value={state.model}
           onChange={(e) => {
-            handleRoleChange(e.target.value as ChatRole)
+            handleModelChange(e.target.value as ChatModel)
           }}
         >
-          <option>system</option>
-          <option>assistant</option>
-          <option>user</option>
+          {chatModels.map((model) => (
+            <option value={model} key={model} selected={model === state.model}>
+              {model}
+            </option>
+          ))}
         </select>
         <p css={formLabelStyle}>Temperature</p>
         <input

@@ -24,6 +24,7 @@ type SidebarStateContextType = {
 export const SidebarStateContext = createContext<SidebarStateContextType>({
   state: {
     role: 'user',
+    model: 'gpt-3.5-turbo',
     temperature: 0.0,
     message: '',
     thread: createNewThread(),
@@ -37,6 +38,7 @@ export const SidebarStateContext = createContext<SidebarStateContextType>({
 export const SidebarStateProvider = ({ children }: PropsWithChildren) => {
   const [state, setState] = useState<AppState>({
     role: 'user',
+    model: 'gpt-3.5-turbo',
     temperature: 0.0,
     message: '',
     thread: createNewThread(),
