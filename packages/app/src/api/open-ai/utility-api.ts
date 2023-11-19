@@ -1,3 +1,4 @@
+import { type ChatModel } from '@/domain/chat'
 import { fetchChatResponse } from './chat-api'
 
 /**
@@ -9,6 +10,7 @@ import { fetchChatResponse } from './chat-api'
 export const fetchTitleFromMessage = async (
   apiKey: string,
   message: string,
+  model: ChatModel,
   temperature = 0.5
 ) => {
   const prompt =
@@ -18,10 +20,12 @@ export const fetchTitleFromMessage = async (
 
   const response = await fetchChatResponse(apiKey, {
     temperature,
+    model,
     messages: [
       {
         id: 'title',
         role: 'user',
+        model,
         message: prompt,
       },
     ],

@@ -7,4 +7,9 @@ export const threadSchema = zod.object({
   messages: zod.array(chatMessageSchema),
 })
 
+export const savedThreadListSchema = zod.object({
+  version: zod.number(),
+  threadList: zod.array(threadSchema),
+})
+
 export type Thread = zod.infer<typeof threadSchema>

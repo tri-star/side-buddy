@@ -5,6 +5,7 @@ import {
   type ChatMessage,
   chatRequestSchema,
   type ChatRole,
+  type ChatModel,
 } from '@/domain/chat'
 import { gernerateChatStream } from '@/api/open-ai/chat-api'
 import * as ulid from 'ulid'
@@ -137,6 +138,18 @@ export function useSidebar(
   )
 
   /**
+   * モデルの変更時の処理
+   */
+  const handleModelChange = useCallback(
+    (model: ChatModel) => {
+      updateState({
+        model,
+      })
+    },
+    [updateState]
+  )
+
+  /**
    * temperatureの変更時の処理
    */
   const handleTemperatureChange = useCallback(
@@ -155,6 +168,7 @@ export function useSidebar(
     fetchTitleFromMessage(
       state.config?.apiKey ?? '',
       state.message,
+      state.model,
       state.temperature
     )
       .then((title) => {
@@ -166,6 +180,7 @@ export function useSidebar(
   }, [
     state.config?.apiKey,
     state.message,
+    state.model,
     state.temperature,
     handleThreadTitleChange,
   ])
@@ -177,7 +192,8 @@ export function useSidebar(
     const messageId = ulid.ulid()
     addThreadMessage({
       id: messageId,
-      role: state.role,
+      role: 'user',
+      model: state.model,
       message: state.message,
     })
     updateState({ message: '' })
@@ -190,11 +206,13 @@ export function useSidebar(
 
     for await (const chunk of gernerateChatStream(state.config?.apiKey ?? '', {
       temperature: state.temperature,
+      model: state.model,
       messages: [
         ...state.thread.messages,
         {
           id: messageId,
-          role: state.role,
+          role: 'user',
+          model: state.model,
           message: state.message,
         },
       ],
@@ -205,6 +223,7 @@ export function useSidebar(
     addThreadMessage({
       id: ulid.ulid(),
       role: 'assistant',
+      model: state.model,
       message: completionResult,
     })
     setCompletion('')
@@ -261,6 +280,7 @@ export function useSidebar(
     state,
     handleThreadTitleChange,
     handleRoleChange,
+    handleModelChange,
     handleTemperatureChange,
     handleMessageChange,
     completion,
