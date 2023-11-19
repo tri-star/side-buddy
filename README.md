@@ -2,8 +2,8 @@
 
 ## Overview
 
-Your friend living in the sidebar, powered by OpenAI API(GPT-4).
-You can specify the role and temperature, and refer to conversation history(shared between Windows/WSL).
+Your friend living in the sidebar, powered by OpenAI API(from gpt-3.5-turbo to gpt-4-1106-preview).
+You can specify the model and temperature, and refer to conversation history(shared between Windows/WSL).
 
 ## Requirements
 
@@ -18,6 +18,8 @@ See [CHANGELOG.md](./CHANGELOG.md)
 ## Main features
 
 ### Chat with GPT-4
+
+You can chat with multiple models that are allowed for your API key.
 
 ![](./docs/images/main-feature01.gif)
 
@@ -39,7 +41,7 @@ The contents of the thread can be saved. The saved contents are shared between W
 
 ---
 
-### Role, temperature
+### Model, temperature
 
 You can specify role, temperature.
 
