@@ -75,6 +75,7 @@ function findAppChunkFileNames(extensionPath: string): ViteManifest {
     'packages',
     'app',
     'dist',
+    '.vite',
     'manifest.json'
   )
 
