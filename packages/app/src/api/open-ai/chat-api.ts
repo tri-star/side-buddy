@@ -77,7 +77,7 @@ export async function fetchChatResponse(
     }),
   })
 
-  if (response == null || response.body == null) {
+  if (response?.body == null) {
     throw new Error('response is null')
   }
 
@@ -115,7 +115,7 @@ export async function* gernerateChatStream(
     }),
   })
 
-  if (response == null || response.body == null) {
+  if (response?.body == null) {
     throw new Error('response is null')
   }
 
