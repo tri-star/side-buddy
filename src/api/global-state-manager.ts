@@ -44,7 +44,7 @@ export class GlobalStateManager {
     })
   }
 
-  get(key: GlobalStateKey, defaultValue: unknown | undefined): unknown {
+  get(key: GlobalStateKey, defaultValue: unknown): unknown {
     return this._context.globalState.get(key)
   }
 
