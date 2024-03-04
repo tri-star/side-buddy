@@ -2,7 +2,7 @@
 
 ## Overview
 
-Your friend living in the sidebar, powered by OpenAI API(from gpt-3.5-turbo to gpt-4-1106-preview).
+Your friend living in the sidebar, powered by OpenAI API(from gpt-3.5-turbo to gpt-4-0125-preview).
 You can specify the model and temperature, and refer to conversation history(shared between Windows/WSL).
 
 ## Requirements
@@ -43,11 +43,11 @@ The contents of the thread can be saved. The saved contents are shared between W
 
 ### Model, temperature
 
-You can specify role, temperature.
+You can specify model, temperature.
 
 ![](./docs/images/main-feature03.png)
 
-- Role is useful to set the behavior of the bot.
+- The model parameter is used to control response quality, speed and character.
 - The temperature parameter is used to control the diversity of generated text. This parameter is specified in the range of 0 to 2, and the higher the value, the more diverse the responses generated. On the other hand, the lower the value, the more predictable the responses generated.
 
 ---
