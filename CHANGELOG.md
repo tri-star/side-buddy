@@ -1,5 +1,9 @@
 # Change Log
 
+## v2.3.0
+
+- Add gpt-4-0125-preview.
+
 ## v2.2.0
 
 - You can now select model from gpt-3.5-turbo to gpt-4-1106-preview.
