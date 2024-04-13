@@ -1,4 +1,4 @@
-import { type ChatRequest } from '@/domain/chat'
+import { DEFAULT_CHAT_MODEL, type ChatRequest } from '@/domain/chat'
 
 /*
 {
@@ -63,7 +63,7 @@ export async function fetchChatResponse(
       Authorization: `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
-      model: 'gpt-3.5-turbo',
+      model: DEFAULT_CHAT_MODEL,
       messages: request.messages.map((message) => {
         return {
           role: message.role,

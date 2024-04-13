@@ -1,5 +1,9 @@
 # Change Log
 
+## v2.4.0
+
+- Add gpt-4-turbo.
+
 ## v2.3.0
 
 - Add gpt-4-0125-preview.
