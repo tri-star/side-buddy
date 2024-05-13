@@ -1,5 +1,9 @@
 # Change Log
 
+## v2.5.0
+
+- Add gpt-4o.
+
 ## v2.4.0
 
 - Add gpt-4-turbo.

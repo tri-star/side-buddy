@@ -29,8 +29,7 @@ export async function run(): Promise<void> {
             }
           })
         } catch (err) {
-          console.error(err)
-          reject(err)
+          reject(new Error(err as string))
         }
       }
     )
