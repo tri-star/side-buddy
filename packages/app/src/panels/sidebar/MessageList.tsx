@@ -1,5 +1,4 @@
 import { css } from '@emotion/react'
-import { useAutoScroll } from './use-auto-scroll'
 import { useRef } from 'react'
 import { useSidebar } from './use-sidebar'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -10,7 +9,7 @@ export function MessageList() {
 
   const conversationAreaRef = useRef<HTMLDivElement>(null)
   const completionAreaRef = useRef<HTMLDivElement>(null)
-  useAutoScroll(conversationAreaRef, completionAreaRef)
+  // useAutoScroll(conversationAreaRef, completionAreaRef)
 
   const conversationAreaStyle = css({
     flex: 1,
