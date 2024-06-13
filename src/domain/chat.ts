@@ -1,6 +1,8 @@
 import zod from 'zod'
 
 export const modelSchema = zod.union([
+  zod.literal('gpt-4o'),
+  zod.literal('gpt-4-turbo'),
   zod.literal('gpt-4-1106-preview'),
   zod.literal('gpt-4'),
   zod.literal('gpt-4-32k'),
