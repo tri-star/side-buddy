@@ -14,8 +14,11 @@ export function useContextMenu() {
     container: HTMLElement | null
   ) => {
     event.preventDefault()
+
+    const parentRect = container?.getBoundingClientRect()
+
     setX(event.clientX)
-    setY(event.clientY)
+    setY(event.clientY - ((parentRect?.top ?? 0) + (container?.scrollTop ?? 0)))
     setEntries(entries)
     setShow(true)
     setContainer(container)
