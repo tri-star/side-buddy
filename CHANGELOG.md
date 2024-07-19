@@ -1,5 +1,9 @@
 # Change Log
 
+## v2.5.2
+
+- Fixed an issue where the menu that appears when right-clicking on the thread list would shift when scrolling.
+
 ## v2.5.0
 
 - Add gpt-4o.
