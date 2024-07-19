@@ -7,9 +7,9 @@
     "type": "git",
     "url": "https://github.com/tri-star/side-buddy"
   },
-  "version": "2.5.0",
+  "version": "2.5.1",
   "engines": {
-    "vscode": "^1.88.0"
+    "vscode": "^1.90.0"
   },
   "categories": [
     "Other"
