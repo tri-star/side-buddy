@@ -13,6 +13,7 @@ import { ContextMenu } from '@/components/ContextMenu'
 import { useContextMenu } from '@/hooks/use-context-menu'
 import { faTrash, faUpload } from '@fortawesome/free-solid-svg-icons'
 import { ExtensionBridgeContext } from '@/providers/ExtensionBridgeStubProvider'
+import { ThreadListHeader } from './ThreadListHeader'
 
 export function ThreadList(): ReactElement {
   const containerRef = useRef(null)
@@ -80,20 +81,23 @@ export function ThreadList(): ReactElement {
   }
 
   return (
-    <div ref={containerRef}>
-      {threads.map((thread) => {
-        return (
-          <ThreadListItem
-            thread={thread}
-            handleClick={handleClick}
-            handleRightClick={(e, threadId) => {
-              handleRightClick(e, threadId)
-            }}
-            key={thread.id}
-          />
-        )
-      })}
-      <ContextMenu {...contextMenu.props} onCancel={handleCancel} />
+    <div>
+      <ThreadListHeader />
+      <div ref={containerRef}>
+        {threads.map((thread) => {
+          return (
+            <ThreadListItem
+              thread={thread}
+              handleClick={handleClick}
+              handleRightClick={(e, threadId) => {
+                handleRightClick(e, threadId)
+              }}
+              key={thread.id}
+            />
+          )
+        })}
+        <ContextMenu {...contextMenu.props} onCancel={handleCancel} />
+      </div>
     </div>
   )
 }
