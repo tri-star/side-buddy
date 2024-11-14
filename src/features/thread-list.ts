@@ -70,6 +70,9 @@ class ThreadListProvider implements vscode.WebviewViewProvider {
       case 'remove-thread':
         void this.removeThread(parsedMessage.threadId)
         break
+      case 'export-thread-list':
+        void this.handleExportThreadList()
+        break
     }
   }
 
@@ -95,6 +98,27 @@ class ThreadListProvider implements vscode.WebviewViewProvider {
     }
     await this._threadRepository.remove(threadId)
     await this.handleUpdateThreadList()
+  }
+
+  async handleExportThreadList() {
+    const options: vscode.SaveDialogOptions = {
+      filters: {
+        JSON: ['json'],
+      },
+      title: 'Export thread list',
+      saveLabel: 'Export',
+    }
+    const uri = await vscode.window.showSaveDialog(options)
+    if (uri !== undefined) {
+      const threadList = await this._threadRepository.fetchList()
+      const bytes = new TextEncoder().encode(
+        JSON.stringify(threadList, null, 2)
+      )
+      await vscode.workspace.fs.writeFile(uri, bytes)
+      await vscode.window.showInformationMessage(
+        'The thread list has been exported.'
+      )
+    }
   }
 
   private async handleUpdateThreadList() {

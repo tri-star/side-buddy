@@ -42,6 +42,11 @@ const removeThreadSchema = zod.object({
   threadId: zod.string(),
 })
 
+const exportThreadListSchema = zod.object({
+  type: zod.literal('export-thread-list'),
+  source: zod.literal('side-buddy-panel'),
+})
+
 export const panelMessageSchema = zod.discriminatedUnion('type', [
   loadedSchema,
   logMessageSchema,
@@ -49,6 +54,7 @@ export const panelMessageSchema = zod.discriminatedUnion('type', [
   saveThreadListSchema,
   loadThreadSchema,
   removeThreadSchema,
+  exportThreadListSchema,
 ])
 
 export type PanelMessage = zod.infer<typeof panelMessageSchema>
