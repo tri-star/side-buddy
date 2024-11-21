@@ -20,7 +20,7 @@ export const fetchTitleFromMessage = async (
 
   const response = await fetchChatResponse(apiKey, {
     temperature,
-    model,
+    model: model === 'o1-preview' ? 'gpt-4o' : model,
     messages: [
       {
         id: 'title',

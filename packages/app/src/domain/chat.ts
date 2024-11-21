@@ -7,11 +7,14 @@ export const roleSchema = zod.union([
 ])
 
 export const modelSchema = zod.union([
+  zod.literal('o1-preview'),
+  zod.literal('o1-mini'),
   zod.literal('gpt-4o'),
   zod.literal('gpt-4-turbo'),
   zod.literal('gpt-4-0125-preview'),
   zod.literal('gpt-4-1106-preview'),
   zod.literal('gpt-4'),
+  zod.literal('gpt-4o-mini'),
   zod.literal('gpt-4-32k'),
   zod.literal('gpt-3.5-turbo-1106'),
   zod.literal('gpt-3.5-turbo'),
@@ -42,15 +45,14 @@ export const chatRoles: ChatRole[] = ['system', 'assistant', 'user']
 export type ChatModel = zod.infer<typeof modelSchema>
 
 export const chatModels: ChatModel[] = [
+  'o1-preview',
+  'o1-mini',
   'gpt-4o',
   'gpt-4-turbo',
   'gpt-4-0125-preview',
   'gpt-4-1106-preview',
-  'gpt-4-32k',
   'gpt-4',
-  'gpt-3.5-turbo-1106',
-  'gpt-3.5-turbo-16k',
-  'gpt-3.5-turbo',
+  'gpt-4o-mini',
 ] as const
 
 export const DEFAULT_CHAT_MODEL: ChatModel = 'gpt-4o'

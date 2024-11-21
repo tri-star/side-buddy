@@ -2,6 +2,10 @@
 
 ## v2.5.2
 
+- Add o1-preview , o1-mini, gpt4o-mini.
+
+## v2.5.2
+
 - Fixed an issue where the menu that appears when right-clicking on the thread list would shift when scrolling.
 
 ## v2.5.0
