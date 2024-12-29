@@ -1,4 +1,4 @@
-import { type MenuEntry } from '@/components/ContextMenu'
+import type { MenuEntry } from '@/components/ContextMenu'
 import { type MouseEvent as ReactMouseEvent, useState } from 'react'
 
 export function useContextMenu() {
@@ -9,7 +9,7 @@ export function useContextMenu() {
   const [container, setContainer] = useState<HTMLElement | null>(null)
 
   const showMenu = (
-    event: ReactMouseEvent<HTMLElement, MouseEvent>,
+    event: ReactMouseEvent<HTMLElement>,
     entries: MenuEntry[],
     container: HTMLElement | null
   ) => {

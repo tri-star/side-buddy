@@ -1,5 +1,5 @@
 import { css } from '@emotion/react'
-import { type IconDefinition } from '@fortawesome/fontawesome-common-types'
+import type { IconDefinition } from '@fortawesome/fontawesome-common-types'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 type IconButtonProps = {

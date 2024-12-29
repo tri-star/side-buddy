@@ -1,4 +1,4 @@
-import { type AppState } from '@/domain/app-state'
+import type { AppState } from '@/domain/app-state'
 import { createNewThread } from '@/domain/thread'
 import { ExtensionBridgeContext } from '@/providers/ExtensionBridgeStubProvider'
 import {

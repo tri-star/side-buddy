@@ -1,5 +1,5 @@
 import type vscode from 'vscode'
-import { type ExtensionMessage } from '@/domain/extension-message'
+import type { ExtensionMessage } from '@/domain/extension-message'
 
 export async function sendMessage(
   webView: vscode.Webview,

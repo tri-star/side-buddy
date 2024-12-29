@@ -4,14 +4,14 @@ import {
   ConfigStorage,
   type ConfigStorageInterface,
 } from '@/api/config-storage'
-import { type AppConfig } from '@/domain/app-config'
+import type { AppConfig } from '@/domain/app-config'
 import { sendMessage } from '@/api/send-message'
 import {
   ThreadRepository,
   type ThreadRepositoryInterface,
 } from '@/api/thread-repository'
 import { panelMessageSchema } from '@/domain/panel-message'
-import { type ExtensionEventEmitter } from '@/api/extension-event-emitter'
+import type { ExtensionEventEmitter } from '@/api/extension-event-emitter'
 import { getHtmlForWebview } from '@/lib/vs-code/web-view-view-provider'
 
 export function registerThreadListPanel(
@@ -70,6 +70,10 @@ class ThreadListProvider implements vscode.WebviewViewProvider {
       case 'remove-thread':
         void this.removeThread(parsedMessage.threadId)
         break
+      case 'log':
+      case 'save-thread':
+      case 'set-api-key':
+        break
     }
   }
 
@@ -115,7 +119,7 @@ class ThreadListProvider implements vscode.WebviewViewProvider {
    */
   resolveWebviewView(
     webviewView: vscode.WebviewView,
-    context: vscode.WebviewViewResolveContext<unknown>,
+    context: vscode.WebviewViewResolveContext,
     token: vscode.CancellationToken
   ): void | Thenable<void> {
     this._view = webviewView

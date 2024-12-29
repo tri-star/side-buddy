@@ -1,4 +1,5 @@
 import { css, keyframes } from '@emotion/react'
+import type { JSX } from 'react'
 
 export function Spinner(): JSX.Element {
   const gridAnimation = keyframes({

@@ -1,5 +1,5 @@
-import { type Thread } from '@/domain/thread'
-import { type ThreadRepositoryInterface } from './thread-repository'
+import type { Thread } from '@/domain/thread'
+import type { ThreadRepositoryInterface } from './thread-repository'
 import { vsCodeApi } from '@/api/extension/vs-code-api'
 
 export class ThreadRepositoryVsCode implements ThreadRepositoryInterface {

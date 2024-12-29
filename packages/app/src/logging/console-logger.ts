@@ -1,4 +1,4 @@
-import { type Logger } from './logger'
+import type { Logger } from './logger'
 
 export class ConsoleLogger implements Logger {
   debug(message: string): void {

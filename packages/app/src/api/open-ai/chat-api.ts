@@ -64,12 +64,10 @@ export async function fetchChatResponse(
     },
     body: JSON.stringify({
       model: DEFAULT_CHAT_MODEL,
-      messages: request.messages.map((message) => {
-        return {
-          role: message.role,
-          content: message.message,
-        }
-      }),
+      messages: request.messages.map((message) => ({
+        role: message.role,
+        content: message.message,
+      })),
       temperature: request.temperature,
       frequency_penalty: 0,
       presence_penalty: 0,
@@ -101,12 +99,10 @@ export async function* gernerateChatStream(
     },
     body: JSON.stringify({
       model: request.model,
-      messages: request.messages.map((message) => {
-        return {
-          role: message.role,
-          content: message.message,
-        }
-      }),
+      messages: request.messages.map((message) => ({
+        role: message.role,
+        content: message.message,
+      })),
       temperature: request.temperature,
       frequency_penalty: 0,
       presence_penalty: 0,
@@ -124,7 +120,7 @@ export async function* gernerateChatStream(
 
   // TODO: ServerSentEventのレスポンスをパースする処理は独立させテストを実装する
   let stopper = 100000
-  while (true && stopper > 0) {
+  while (stopper > 0) {
     const { done, value } = await reader.read()
     if (done) {
       break
@@ -148,6 +144,7 @@ export async function* gernerateChatStream(
 
         for (const choice of streamEntry.choices) {
           if (choice.finish_reason != null) {
+            // eslint-disable-next-line max-depth -- TODO
             if (choice.finish_reason !== 'stop') {
               console.info(choice)
             }

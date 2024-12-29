@@ -1,4 +1,4 @@
-import { type Thread } from '@/domain/thread'
+import type { Thread } from '@/domain/thread'
 import { css } from '@emotion/react'
 import { faBook } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -7,10 +7,7 @@ import { type MouseEvent as ReactMouseEvent, useRef } from 'react'
 type Props = {
   thread: Thread
   handleClick: (threadId: string) => void
-  handleRightClick: (
-    e: ReactMouseEvent<HTMLElement, MouseEvent>,
-    threadId: string
-  ) => void
+  handleRightClick: (e: ReactMouseEvent<HTMLElement>, threadId: string) => void
 }
 
 export function ThreadListItem({
@@ -50,7 +47,7 @@ export function ThreadListItem({
     },
   })
 
-  const handleContextMenu = (e: ReactMouseEvent<HTMLElement, MouseEvent>) => {
+  const handleContextMenu = (e: ReactMouseEvent<HTMLElement>) => {
     handleRightClick(e, thread.id)
   }
 

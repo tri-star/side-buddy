@@ -1,4 +1,4 @@
-import { type ExtensionEventType } from '@/domain/extension-event'
+import type { ExtensionEventType } from '@/domain/extension-event'
 import { EventEmitter } from 'events'
 
 /**

@@ -9,6 +9,7 @@
     "strict": true /* enable all strict type-checking options */,
     "moduleResolution": "Node",
     "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
     "paths": {
       "@/*": ["./*"]
     }

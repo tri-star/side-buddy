@@ -6,5 +6,5 @@
     "allowSyntheticDefaultImports": true,
     "strict": true
   },
-  "include": [".eslintrc.js", "prettier.config.js", "webpack.config.js"]
+  "include": ["eslint.config.mjs", "prettier.config.js", "webpack.config.js"]
 }

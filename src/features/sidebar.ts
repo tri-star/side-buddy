@@ -6,13 +6,13 @@ import {
   ConfigStorage,
   type ConfigStorageInterface,
 } from '@/api/config-storage'
-import { type AppConfig } from '@/domain/app-config'
+import type { AppConfig } from '@/domain/app-config'
 import {
   type ThreadRepositoryInterface,
   ThreadRepository,
 } from '@/api/thread-repository'
-import { type Thread } from '@/domain/thread'
-import { type ExtensionEventEmitter } from '@/api/extension-event-emitter'
+import type { Thread } from '@/domain/thread'
+import type { ExtensionEventEmitter } from '@/api/extension-event-emitter'
 import { getHtmlForWebview } from '@/lib/vs-code/web-view-view-provider'
 
 export function registerSideBarPanel(
@@ -79,6 +79,10 @@ class SidebarProvider implements vscode.WebviewViewProvider {
         break
       case 'log':
         this._logger.log(parsedMessage.level, parsedMessage.message)
+        break
+      case 'load-thread':
+      case 'remove-thread':
+        break
     }
   }
 
@@ -164,7 +168,7 @@ class SidebarProvider implements vscode.WebviewViewProvider {
    */
   resolveWebviewView(
     webviewView: vscode.WebviewView,
-    context: vscode.WebviewViewResolveContext<unknown>,
+    context: vscode.WebviewViewResolveContext,
     token: vscode.CancellationToken
   ): void | Thenable<void> {
     this._view = webviewView

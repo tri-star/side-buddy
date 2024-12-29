@@ -84,22 +84,20 @@ export function MessageList() {
 
   return (
     <div css={conversationAreaStyle} ref={conversationAreaRef}>
-      {state.thread.messages.map((message) => {
-        return (
-          <div key={message.id} css={threadMessageStyle[message.role]}>
-            <div
-              className="remove"
-              css={removeIconStyle}
-              onClick={() => {
-                handleRemoveMessage(message.id)
-              }}
-            >
-              <FontAwesomeIcon icon={faTimes} size="2x" />
-            </div>
-            <p>{message.message}</p>
+      {state.thread.messages.map((message) => (
+        <div key={message.id} css={threadMessageStyle[message.role]}>
+          <div
+            className="remove"
+            css={removeIconStyle}
+            onClick={() => {
+              handleRemoveMessage(message.id)
+            }}
+          >
+            <FontAwesomeIcon icon={faTimes} size="2x" />
           </div>
-        )
-      })}
+          <p>{message.message}</p>
+        </div>
+      ))}
       <div
         css={completionStyle}
         ref={completionAreaRef}

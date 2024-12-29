@@ -1,7 +1,7 @@
-import { type PanelMessage } from '@/domain/panel-message'
-import { type ExtensionStubInterface } from './extension-stub'
-import { type ExtensionMessage } from '@/domain/extension-message'
-import { type AppConfig } from '@/domain/app-config'
+import type { PanelMessage } from '@/domain/panel-message'
+import type { ExtensionStubInterface } from './extension-stub'
+import type { ExtensionMessage } from '@/domain/extension-message'
+import type { AppConfig } from '@/domain/app-config'
 import { type Thread, threadSchema } from '@/domain/thread'
 
 export class ThreadListExtensionStub implements ExtensionStubInterface {
@@ -34,6 +34,12 @@ export class ThreadListExtensionStub implements ExtensionStubInterface {
           threads: this.loadThreads(),
         } satisfies ExtensionMessage)
         break
+      case 'load-thread':
+      case 'loaded':
+      case 'log':
+      case 'save-thread':
+      case 'set-api-key':
+        break
     }
   }
 
@@ -41,9 +47,9 @@ export class ThreadListExtensionStub implements ExtensionStubInterface {
     const threads = localStorage.getItem('threads')
     let threadList: Thread[] = []
     if (threads != null) {
-      threadList = (JSON.parse(threads) as unknown[]).map((t: unknown) => {
-        return threadSchema.parse(t)
-      })
+      threadList = (JSON.parse(threads) as unknown[]).map((t: unknown) =>
+        threadSchema.parse(t)
+      )
     }
     return threadList
   }

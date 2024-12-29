@@ -12,9 +12,8 @@ export type VsCodeApi = {
 
 declare const acquireVsCodeApi: () => VsCodeApi
 
-export const isVsCodeEnv = (): boolean => {
-  return typeof acquireVsCodeApi !== 'undefined'
-}
+export const isVsCodeEnv = (): boolean =>
+  typeof acquireVsCodeApi !== 'undefined'
 
 export const vsCodeApi = isVsCodeEnv()
   ? acquireVsCodeApi()
@@ -38,6 +37,12 @@ function acquireVsCodeApiStub(): VsCodeApi {
             source: 'side-buddy-panel',
             apiKey: parsedMessage.apiKey,
           } satisfies PanelMessage)
+          break
+        case 'load-thread':
+        case 'loaded':
+        case 'log':
+        case 'remove-thread':
+        case 'save-thread':
           break
       }
     },

@@ -1,4 +1,4 @@
-import { type PanelMessage } from '@/domain/panel-message'
+import type { PanelMessage } from '@/domain/panel-message'
 import { vsCodeApi } from './vs-code-api'
 import {
   type PostMessagePayload,
@@ -53,6 +53,7 @@ export class ExtensionBridge implements ExtensionBridgeInterface {
               e.toString()
           )
         } else {
+          // eslint-disable-next-line @typescript-eslint/only-throw-error -- TODO
           throw e
         }
       }
