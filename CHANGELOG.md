@@ -1,6 +1,10 @@
 # Change Log
 
-## v2.5.2
+## v2.7.0
+
+- Add o1.
+
+## v2.6.2
 
 - Add o1-preview , o1-mini, gpt4o-mini.
 
