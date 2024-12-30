@@ -7,7 +7,7 @@
     "type": "git",
     "url": "https://github.com/tri-star/side-buddy"
   },
-  "version": "2.6.2",
+  "version": "2.7.0",
   "engines": {
     "vscode": "^1.91.0"
   },
