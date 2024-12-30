@@ -1,4 +1,4 @@
-import { type PanelMessage } from '@/domain/panel-message'
+import type { PanelMessage } from '@/domain/panel-message'
 
 /**
  * Interface for emulate VsCode behaviour, for develop without VSCode.

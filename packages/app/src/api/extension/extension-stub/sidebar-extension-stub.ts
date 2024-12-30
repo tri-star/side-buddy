@@ -1,7 +1,7 @@
-import { type PanelMessage } from '@/domain/panel-message'
-import { type ExtensionStubInterface } from './extension-stub'
-import { type ExtensionMessage } from '@/domain/extension-message'
-import { type AppConfig } from '@/domain/app-config'
+import type { PanelMessage } from '@/domain/panel-message'
+import type { ExtensionStubInterface } from './extension-stub'
+import type { ExtensionMessage } from '@/domain/extension-message'
+import type { AppConfig } from '@/domain/app-config'
 
 export class SidebarExtensionStub implements ExtensionStubInterface {
   private config: AppConfig | undefined
@@ -39,6 +39,11 @@ export class SidebarExtensionStub implements ExtensionStubInterface {
           source: 'side-buddy-extension',
           config: this.config,
         } satisfies ExtensionMessage)
+        break
+      case 'load-thread':
+      case 'log':
+      case 'remove-thread':
+      case 'save-thread':
         break
     }
   }

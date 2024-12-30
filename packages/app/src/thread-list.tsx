@@ -6,7 +6,7 @@ import { ExtensionBridgeProvider } from './providers/ExtensionBridgeStubProvider
 import { isVsCodeEnv } from './api/extension/vs-code-api'
 import { ThreadListExtensionStub } from './api/extension/extension-stub/thread-list-extension-stub'
 
-let extensionStub
+let extensionStub = undefined
 
 if (!isVsCodeEnv()) {
   extensionStub = new ThreadListExtensionStub()

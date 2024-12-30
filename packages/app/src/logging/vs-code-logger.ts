@@ -1,6 +1,6 @@
 import { vsCodeApi } from '@/api/extension/vs-code-api'
-import { type Logger } from './logger'
-import { type PanelMessage } from '@/domain/panel-message'
+import type { Logger } from './logger'
+import type { PanelMessage } from '@/domain/panel-message'
 
 export class VsCodeLogger implements Logger {
   debug(message: string): void {

@@ -1,6 +1,6 @@
-import {
-  type VersionedDocument,
-  type MigrationDefinition,
+import type {
+  VersionedDocument,
+  MigrationDefinition,
 } from '@tri-star/json-migrate'
 
 export const threadListMigrations: MigrationDefinition[] = [
@@ -18,20 +18,16 @@ export const threadListMigrations: MigrationDefinition[] = [
       }>
 
       return {
-        threadList: threadList.map((thread) => {
-          return {
-            id: thread.id,
-            title: thread.title,
-            messages: thread.messages.map((message) => {
-              return {
-                id: message.id,
-                role: message.role,
-                model: 'gpt-4',
-                message: message.message,
-              }
-            }),
-          }
-        }),
+        threadList: threadList.map((thread) => ({
+          id: thread.id,
+          title: thread.title,
+          messages: thread.messages.map((message) => ({
+            id: message.id,
+            role: message.role,
+            model: 'gpt-4',
+            message: message.message,
+          })),
+        })),
       }
     },
   },

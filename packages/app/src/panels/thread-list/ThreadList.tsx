@@ -1,5 +1,5 @@
-import { type ExtensionMessage } from '@/domain/extension-message'
-import { type Thread } from '@/domain/thread'
+import type { ExtensionMessage } from '@/domain/extension-message'
+import type { Thread } from '@/domain/thread'
 import {
   type MouseEvent as ReactMouseEvent,
   type ReactElement,
@@ -26,6 +26,9 @@ export function ThreadList(): ReactElement {
         case 'update-thread-list':
           setThreads(message.threads)
           break
+        case 'load-thread':
+        case 'updateConfig':
+          break
       }
     })
     extensionBridge?.sendPanelMessage({
@@ -43,7 +46,7 @@ export function ThreadList(): ReactElement {
   }
 
   const handleRightClick = (
-    e: ReactMouseEvent<HTMLElement, MouseEvent>,
+    e: ReactMouseEvent<HTMLElement>,
     threadId: string
   ) => {
     const menues = [
@@ -81,18 +84,16 @@ export function ThreadList(): ReactElement {
 
   return (
     <div ref={containerRef}>
-      {threads.map((thread) => {
-        return (
-          <ThreadListItem
-            thread={thread}
-            handleClick={handleClick}
-            handleRightClick={(e, threadId) => {
-              handleRightClick(e, threadId)
-            }}
-            key={thread.id}
-          />
-        )
-      })}
+      {threads.map((thread) => (
+        <ThreadListItem
+          thread={thread}
+          handleClick={handleClick}
+          handleRightClick={(e, threadId) => {
+            handleRightClick(e, threadId)
+          }}
+          key={thread.id}
+        />
+      ))}
       <ContextMenu {...contextMenu.props} onCancel={handleCancel} />
     </div>
   )

@@ -1,4 +1,4 @@
-import { type Thread } from '@/domain/thread'
+import type { Thread } from '@/domain/thread'
 import { ThreadRepositoryLocalStorage } from '@/api/thread/thread-repository-local-storage'
 import { isVsCodeEnv } from '@/api/extension/vs-code-api'
 import { ThreadRepositoryVsCode } from './thread-repository-vs-code'

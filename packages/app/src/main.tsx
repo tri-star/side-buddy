@@ -7,7 +7,7 @@ import { SidebarStateProvider } from './panels/sidebar/SidebarStateProvider'
 import { ExtensionBridgeProvider } from './providers/ExtensionBridgeStubProvider'
 import { SidebarExtensionStub } from './api/extension/extension-stub/sidebar-extension-stub'
 
-let extensionStub
+let extensionStub = undefined
 if (!isVsCodeEnv()) {
   extensionStub = new SidebarExtensionStub()
   void extensionStub.start()

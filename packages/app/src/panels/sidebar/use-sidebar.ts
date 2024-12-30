@@ -1,6 +1,6 @@
 import { type KeyboardEvent, useCallback, useContext } from 'react'
-import { type ExtensionMessage } from '@/domain/extension-message'
-import { type AppState } from '@/domain/app-state'
+import type { ExtensionMessage } from '@/domain/extension-message'
+import type { AppState } from '@/domain/app-state'
 import {
   type ChatMessage,
   chatRequestSchema,
@@ -10,7 +10,7 @@ import {
 import { gernerateChatStream } from '@/api/open-ai/chat-api'
 import * as ulid from 'ulid'
 import { fetchTitleFromMessage } from '@/api/open-ai/utility-api'
-import { type ThreadRepositoryFactory } from '@/api/thread/thread-repository'
+import type { ThreadRepositoryFactory } from '@/api/thread/thread-repository'
 import { defaultThreadRepositoryFactory } from '@/api/thread/thread-repository'
 import { createNewThread } from '@/domain/thread'
 import { SidebarStateContext } from './SidebarStateProvider'
@@ -30,14 +30,12 @@ export function useSidebar(
    */
   const addThreadMessage = useCallback(
     (message: ChatMessage) => {
-      updateState((prev: AppState) => {
-        return {
-          thread: {
-            ...prev.thread,
-            messages: [...prev.thread.messages, message],
-          },
-        }
-      })
+      updateState((prev: AppState) => ({
+        thread: {
+          ...prev.thread,
+          messages: [...prev.thread.messages, message],
+        },
+      }))
     },
     [updateState]
   )
@@ -58,6 +56,8 @@ export function useSidebar(
           updateState({
             thread: message.thread,
           })
+          break
+        case 'update-thread-list':
           break
       }
     },
@@ -103,14 +103,12 @@ export function useSidebar(
    */
   const handleThreadTitleChange = useCallback(
     (title: string) => {
-      updateState((prev: AppState) => {
-        return {
-          thread: {
-            ...prev.thread,
-            title,
-          },
-        }
-      })
+      updateState((prev: AppState) => ({
+        thread: {
+          ...prev.thread,
+          title,
+        },
+      }))
     },
     [updateState]
   )
@@ -176,7 +174,7 @@ export function useSidebar(
       .then((title) => {
         handleThreadTitleChange(title)
       })
-      .catch((e) => {
+      .catch((e: unknown) => {
         console.error('タイトルの取得に失敗しました')
       })
   }, [
@@ -247,9 +245,7 @@ export function useSidebar(
   )
 
   const handleRemoveMessage = (messageId: string) => {
-    const newMessages = state.thread.messages.filter((m) => {
-      return m.id !== messageId
-    })
+    const newMessages = state.thread.messages.filter((m) => m.id !== messageId)
     updateState({
       thread: {
         ...state.thread,

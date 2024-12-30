@@ -1,6 +1,6 @@
 import { css, keyframes } from '@emotion/react'
 
-export function Spinner(): JSX.Element {
+export function Spinner() {
   const gridAnimation = keyframes({
     '0%, 100%': {
       opacity: 1,

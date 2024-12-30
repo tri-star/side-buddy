@@ -3,14 +3,14 @@ import {
   type PostMessageDataPart,
   extensionMessageSchema,
 } from '@/domain/extension-message'
-import { type PanelMessage } from '@/domain/panel-message'
-import {
-  type ExtensionBridgeInterface,
-  type MessageHandler,
+import type { PanelMessage } from '@/domain/panel-message'
+import type {
+  ExtensionBridgeInterface,
+  MessageHandler,
 } from './extension-bridge'
 import { ZodError } from 'zod'
 import { getLogger } from '@/logging/logger'
-import { type ExtensionStubInterface } from './extension-stub/extension-stub'
+import type { ExtensionStubInterface } from './extension-stub/extension-stub'
 
 export class ExtensionBridgeStub implements ExtensionBridgeInterface {
   constructor(private readonly extensionStub: ExtensionStubInterface) {}
@@ -35,7 +35,7 @@ export class ExtensionBridgeStub implements ExtensionBridgeInterface {
 
         const message = extensionMessageSchema.parse(data)
         handler(message)
-      } catch (e) {
+      } catch (e: unknown) {
         if (e instanceof ZodError) {
           let dataString = event.data
           if (typeof dataString === 'object') {
@@ -48,6 +48,7 @@ export class ExtensionBridgeStub implements ExtensionBridgeInterface {
               e.toString()
           )
         } else {
+          // eslint-disable-next-line @typescript-eslint/only-throw-error -- TODO
           throw e
         }
       }

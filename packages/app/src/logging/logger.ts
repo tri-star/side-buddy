@@ -9,7 +9,7 @@ export interface Logger {
   error: (message: string) => void
 }
 
-let logger: Logger | undefined
+let logger: Logger | undefined = undefined
 
 export const getLogger = (): Logger => {
   if (logger === undefined) {

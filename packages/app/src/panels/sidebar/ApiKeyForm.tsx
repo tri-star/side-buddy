@@ -24,9 +24,7 @@ export function ApiKeyForm() {
     padding: '5px 20px',
   })
 
-  const canSubmit = () => {
-    return apiKey !== ''
-  }
+  const canSubmit = () => apiKey !== ''
 
   const submit = () => {
     extensionBridge?.sendPanelMessage({

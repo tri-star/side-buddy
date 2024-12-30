@@ -3,7 +3,7 @@ import {
   type ExtensionBridgeInterface,
 } from '@/api/extension/extension-bridge'
 import { ExtensionBridgeStub } from '@/api/extension/extension-bridge-stub'
-import { type ExtensionStubInterface } from '@/api/extension/extension-stub/extension-stub'
+import type { ExtensionStubInterface } from '@/api/extension/extension-stub/extension-stub'
 import { isVsCodeEnv } from '@/api/extension/vs-code-api'
 import { type PropsWithChildren, createContext, useState } from 'react'
 

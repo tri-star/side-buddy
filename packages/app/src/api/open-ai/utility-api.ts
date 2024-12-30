@@ -1,4 +1,4 @@
-import { type ChatModel } from '@/domain/chat'
+import type { ChatModel } from '@/domain/chat'
 import { fetchChatResponse } from './chat-api'
 
 /**

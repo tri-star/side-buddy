@@ -1,6 +1,6 @@
 import * as path from 'path'
 import * as fs from 'fs'
-import { type Uri } from 'vscode'
+import type { Uri } from 'vscode'
 import * as vscode from 'vscode'
 
 type ViteManifest = Record<

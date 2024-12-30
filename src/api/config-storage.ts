@@ -1,4 +1,4 @@
-import { type AppConfig } from '@/domain/app-config'
+import type { AppConfig } from '@/domain/app-config'
 import * as vscode from 'vscode'
 
 export interface ConfigStorageInterface {
