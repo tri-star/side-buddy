@@ -7,6 +7,7 @@ export const roleSchema = zod.union([
 ])
 
 export const modelSchema = zod.union([
+  zod.literal('o1'),
   zod.literal('o1-preview'),
   zod.literal('o1-mini'),
   zod.literal('gpt-4o'),
@@ -45,6 +46,7 @@ export const chatRoles: ChatRole[] = ['system', 'assistant', 'user']
 export type ChatModel = zod.infer<typeof modelSchema>
 
 export const chatModels: ChatModel[] = [
+  'o1',
   'o1-preview',
   'o1-mini',
   'gpt-4o',
